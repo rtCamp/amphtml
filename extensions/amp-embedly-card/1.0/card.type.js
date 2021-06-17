@@ -14,10 +14,20 @@
  * limitations under the License.
  */
 
-import {AmpEmbedlyCard, TAG as TAG} from './amp-embedly-card-impl';
-import {AmpEmbedlyKey, TAG as KEY_TAG} from './amp-embedly-key';
+/** @externs */
 
-AMP.extension(TAG, '1.0', (AMP) => {
-  AMP.registerElement(TAG, AmpEmbedlyCard);
-  AMP.registerElement(KEY_TAG, AmpEmbedlyKey);
-});
+/** @const */
+var EmbedlyCardDef = {};
+
+/**
+ * @typedef {{
+ *   exampleProperty: (string|undefined), (DO NOT SUBMIT)
+ * }}
+ */
+EmbedlyCardDef.Props;
+
+/** @interface */
+EmbedlyCardDef.EmbedlyCardApi = class {
+  /** Example: API method to toggle the component */
+  exampleToggle() {} // DO NOT SUBMIT
+};

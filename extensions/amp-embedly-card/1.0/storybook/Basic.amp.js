@@ -31,13 +31,15 @@ export default {
 // DO NOT SUBMIT: This is example code only.
 export const ExampleUseCase = () => {
   return (
-    <amp-embedly-card
-      width="300"
-      height="200"
-      example-property="example string property value"
-    >
-      This text is inside.
-    </amp-embedly-card>
+    <>
+      <amp-embedly-key layout="nodisplay">hello</amp-embedly-key>
+      <amp-embedly-card
+        data-url="https://www.youtube.com/watch?v=lBTCB7yLs8Y"
+        layout="responsive"
+        width="100"
+        height="50"
+      ></amp-embedly-card>
+    </>
   );
 };
 
