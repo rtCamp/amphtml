@@ -28,21 +28,18 @@ export default {
   },
 };
 
-// DO NOT SUBMIT: This is example code only.
-export const ExampleUseCase = () => {
+export const EmbedYoutube = () => {
   return (
     <>
-      <amp-embedly-key layout="nodisplay">hello</amp-embedly-key>
+      <amp-embedly-key layout="nodisplay" value="my-test-key">
+        hello
+      </amp-embedly-key>
       <amp-embedly-card
         data-url="https://www.youtube.com/watch?v=lBTCB7yLs8Y"
         layout="responsive"
-        width="100"
-        height="50"
+        width="300"
+        height="200"
       ></amp-embedly-card>
     </>
   );
-};
-
-ExampleUseCase.story = {
-  name: 'Example use case story',
 };

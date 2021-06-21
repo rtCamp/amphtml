@@ -15,18 +15,11 @@
  */
 
 import * as Preact from '../../../src/preact';
-import {ContainWrapper} from '../../../src/preact/component';
 import {TAG as KEY_TAG} from './amp-embedly-key';
-import {getIframe} from '../../../src/3p-frame';
-import {listenFor} from '../../../src/iframe-helper';
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from '../../../src/preact';
+import {ProxyIframeEmbed} from '../../../src/preact/component/3p-frame';
+import {forwardRef} from '../../../src/preact/compat';
+
+import {useRef} from '../../../src/preact';
 
 /**
  * Attribute name used to set api key with name
@@ -37,60 +30,47 @@ const API_KEY_ATTR_NAME = 'data-card-key';
 
 /**
  * @param {!EmbedlyCardDef.Props} props
+ * @param {{current: ?EmbedlyCardDef.Api}} ref
  * @return {PreactDef.Renderable}
  */
-export function EmbedlyCard({getEmbedlyCard, requestResize, url, ...rest}) {
-  // Property and Reference Variables
-  const iframeRef = useRef(null);
-
-  // Checking for valid props
+export function EmbedlyCardWithRef({title, url, ...rest}, ref) {
+  // Check for valid props
   if (!checkProps(url)) {
-    //return null;
+    return null;
   }
 
-  // // Prepare Soundcloud Widget URL for iFrame
-  // let iframeSrc =
-  //   'https://w.soundcloud.com/player/?' +
-  //   'url=' +
-  //   encodeURIComponent(url + mediaId);
+  // Prepare options for ProxyIframeEmbed
+  const iframeOptions = {
+    url,
+  };
 
-  // if (secretToken) {
-  //   // It's very important the entire thing is encoded, since it's part of
-  //   // the `url` query param added above.
-  //   iframeSrc += encodeURIComponent('?secret_token=' + secretToken);
-  // }
+  // Extract Embedly Key
+  const ampEmbedlyKeyElement = document.querySelector(KEY_TAG);
+  const apiKey = ampEmbedlyKeyElement.getAttribute('value');
 
-  // if (visual) {
-  //   iframeSrc += '&visual=true';
-  // } else if (color) {
-  //   iframeSrc += '&color=' + encodeURIComponent(color);
-  // }
-  const iframe = getEmbedlyCard();
+  // Add embedly key
+  if (apiKey) {
+    iframeOptions[API_KEY_ATTR_NAME] = apiKey;
+  }
 
-  useEffect(() => {
-    const opt_is3P = true;
-    listenFor(
-      iframe,
-      'embed-size',
-      (data) => {
-        requestResize(data['height']);
-      },
-      opt_is3P
-    );
-
-    /** Unmount Procedure */
-    return () => {
-      // Release iframe resources
-      iframeRef.current = null;
-    };
-  }, []);
-  console.log(iframe);
-  return {iframe};
+  return (
+    <ProxyIframeEmbed
+      options={iframeOptions}
+      ref={ref}
+      title={title || 'Embedly card'}
+      type="embedly"
+      {...rest}
+    />
+  );
 }
+
+const EmbedlyCard = forwardRef(EmbedlyCardWithRef);
+EmbedlyCard.displayName = 'EmbedlyCard'; // Make findable for tests.
+export {EmbedlyCard};
 
 /**
  * Verify required props and throw error if necessary.
- * @param url Hello
+ * @param {string|undefined} url URL to check
  * @return {boolean} true on valid
  */
 function checkProps(url) {
@@ -103,7 +83,8 @@ function checkProps(url) {
 }
 
 /**
- * @param {?string} message
+ * Display warning in browser console
+ * @param {?string} message Warning to be displayed
  */
 function displayWarning(message) {
   console /*OK*/

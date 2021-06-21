@@ -21,13 +21,8 @@ var EmbedlyCardDef = {};
 
 /**
  * @typedef {{
- *   exampleProperty: (string|undefined), (DO NOT SUBMIT)
+ *   title: (string|undefined),
+ *   url: (string),
  * }}
  */
 EmbedlyCardDef.Props;
-
-/** @interface */
-EmbedlyCardDef.EmbedlyCardApi = class {
-  /** Example: API method to toggle the component */
-  exampleToggle() {} // DO NOT SUBMIT
-};
