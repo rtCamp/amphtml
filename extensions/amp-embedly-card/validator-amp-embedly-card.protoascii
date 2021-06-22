@@ -26,7 +26,6 @@ tags: {  # embedly-card 1.0
   }
   attr_lists: "common-extension-attrs"
 }
-
 tags: {  # embedly-card 0.1 and latest
   html_format: AMP
   tag_name: "SCRIPT"
@@ -42,7 +41,6 @@ tags: {  # embedly-card 0.1 and latest
   }
   attr_lists: "common-extension-attrs"
 }
-
 tags: {  # <amp-embedly-card>
   html_format: AMP
   tag_name: "AMP-EMBEDLY-CARD"
