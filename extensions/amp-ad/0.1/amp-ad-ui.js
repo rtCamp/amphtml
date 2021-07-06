@@ -36,6 +36,8 @@ const TOP_STICKY_AD_TRIGGER_THRESHOLD = 200;
  */
 const StickyAdPositions = {
   TOP: 'top',
+  LEFT: 'left',
+  RIGHT: 'right',
   BOTTOM: 'bottom',
   BOTTOM_RIGHT: 'bottom-right',
 };
@@ -245,6 +247,28 @@ export class AmpAdUIHandler {
           )
         );
       }
+
+      // if (this.stickyAdPosition_ == StickyAdPositions.LEFT) {
+      //   const paddingBar = this.doc_.createElement('amp-ad-sticky-left');
+      //   this.element_.insertBefore(
+      //     paddingBar,
+      //     devAssert(
+      //       this.element_.firstChild,
+      //       'amp-ad should have been expanded.'
+      //     )
+      //   );
+      // }
+
+      // if (this.stickyAdPosition_ == StickyAdPositions.RIGHT) {
+      //   const paddingBar = this.doc_.createElement('amp-ad-sticky-right');
+      //   this.element_.insertBefore(
+      //     paddingBar,
+      //     devAssert(
+      //       this.element_.firstChild,
+      //       'amp-ad should have been expanded.'
+      //     )
+      //   );
+      // }
     }
   }
 
