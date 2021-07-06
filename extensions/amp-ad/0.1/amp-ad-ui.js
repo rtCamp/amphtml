@@ -36,8 +36,7 @@ const TOP_STICKY_AD_TRIGGER_THRESHOLD = 200;
  */
 const StickyAdPositions = {
   TOP: 'top',
-  LEFT: 'left',
-  RIGHT: 'right',
+  SIDEBAR: 'sidebar',
   BOTTOM: 'bottom',
   BOTTOM_RIGHT: 'bottom-right',
 };
@@ -236,6 +235,8 @@ export class AmpAdUIHandler {
         ).getPaddingTop();
         setStyle(this.element_, 'top', `${paddingTop}px`);
       }
+
+      // TODO: Implement top calculation for sticky=SIDEBAR
 
       if (this.stickyAdPosition_ == StickyAdPositions.BOTTOM) {
         const paddingBar = this.doc_.createElement('amp-ad-sticky-padding');
