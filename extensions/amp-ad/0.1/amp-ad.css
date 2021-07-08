@@ -157,18 +157,6 @@ amp-ad[sticky='top'] {
   padding-bottom: 5px;
 }
 
-amp-ad[sticky='left'] {
-  position: fixed;
-  top: 100px;
-  left: 20px;
-}
-
-amp-ad[sticky='right'] {
-  position: fixed;
-  top: 100px;
-  right: 20px;
-}
-
 amp-ad[sticky='bottom'] {
   width: 100% !important;
   padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -180,4 +168,16 @@ amp-ad[sticky='bottom'] {
 amp-ad[sticky='bottom-right'] {
   bottom: 0;
   right: 0;
+}
+
+amp-ad[sticky='left'] {
+  position: fixed;
+  top: 100px;
+  left: 20px;
+}
+
+amp-ad[sticky='right'] {
+  position: fixed;
+  top: 100px;
+  right: 20px;
 }

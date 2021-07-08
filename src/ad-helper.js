@@ -71,6 +71,14 @@ export function isAdPositionAllowed(element, win) {
     }
     el = el.parentElement;
   } while (el && el.tagName != 'BODY');
+
+  if (containers > 0) {
+    console /*OK*/
+      .log(element);
+    console /*OK*/
+      .log('Containers: ' + containers);
+  }
+
   return !hasFixedAncestor && containers <= 1;
 }
 
