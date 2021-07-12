@@ -270,6 +270,15 @@
     }
   },
   {
+    "name": "amp-copyclipboard",
+    "version": "1.0",
+    "latestVersion": "1.0",
+    "options": {
+      "hasCss": true,
+      "wrapper": "bento"
+    }
+  },
+  {
     "name": "amp-crypto-polyfill",
     "version": "0.1",
     "latestVersion": "0.1"
