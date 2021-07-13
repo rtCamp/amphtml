@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 
+import {CommonSignals} from '#core/constants/common-signals';
 import {scopedQuerySelectorAll} from '#core/dom/query';
 import {setImportantStyles} from '#core/dom/style';
 import {user} from '../../../src/log';
+import {whenUpgradedToCustomElement} from '../../../src/amp-element-helpers';
 
 /** @const {number} */
 const CANVAS_SIZE = 3;
 
 /** @const {number} */
-const DURATION_MS = 200;
+const DURATION_MS = 400;
+
+/** @const {string} */
+const CLASS_NAME = 'BACKGROUND-BLUR';
 
 export class BackgroundBlur {
   /**
@@ -39,8 +44,15 @@ export class BackgroundBlur {
     /** @private @const {!Element} */
     this.canvas_ = null;
 
+    /** @private @const {Element} */
+    this.offscreenCanvas_ = this.win_.document.createElement('canvas');
+    this.offscreenCanvas_.width = this.offscreenCanvas_.height = CANVAS_SIZE;
+
     /**  @private {?number} */
     this.currentRAF_ = null;
+
+    /**  @private {?boolean} */
+    this.firstLoad_ = true;
   }
 
   /**
@@ -72,11 +84,24 @@ export class BackgroundBlur {
    * @param {!Element} pageElement
    */
   update(pageElement) {
-    const fillElement = this.getBiggestImage_(pageElement);
-    if (!fillElement) {
-      user().info('BACKGROUND-BLUR', 'No image found for background blur.');
+    const ampImgEl = this.getBiggestImage_(pageElement);
+    if (!ampImgEl) {
+      user().info(CLASS_NAME, 'No image found for background blur.');
+      this.animate_();
+      return;
     }
-    this.animate_(fillElement);
+
+    // Ensures img element exists and is loaded.
+    whenUpgradedToCustomElement(ampImgEl)
+      .then(() => ampImgEl.signals().whenSignal(CommonSignals.LOAD_END))
+      .then(
+        () => {
+          this.animate_(ampImgEl.querySelector('img'));
+        },
+        () => {
+          user().error(CLASS_NAME, 'Failed to load the amp-img.');
+        }
+      );
   }
 
   /**
@@ -85,7 +110,15 @@ export class BackgroundBlur {
    * @param {?Element} fillElement
    */
   animate_(fillElement) {
-    const context = this.canvas_.getContext('2d');
+    this.drawOffscreenCanvas_(fillElement);
+    // Do not animate on first load.
+    if (this.firstLoad_) {
+      this.drawCanvas_(1 /** easing **/);
+      this.firstLoad_ = false;
+      return;
+    }
+
+    // Animation loop for fade.
     let startTime;
     const nextFrame = (currTime) => {
       if (!startTime) {
@@ -93,12 +126,8 @@ export class BackgroundBlur {
       }
       const elapsed = currTime - startTime;
       if (elapsed < DURATION_MS) {
-        const easing = 1 - Math.pow(1 - elapsed / DURATION_MS, 2);
-        context.globalAlpha = easing;
-        context.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-        if (fillElement) {
-          context.drawImage(fillElement, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
-        }
+        const easing = elapsed / DURATION_MS;
+        this.drawCanvas_(easing);
         this.currentRAF_ = requestAnimationFrame(nextFrame);
       }
     };
@@ -108,10 +137,42 @@ export class BackgroundBlur {
   }
 
   /**
+   * Draws to the canvas with opacity.
+   * @private
+   * @param {number} alphaPercentage
+   */
+  drawCanvas_(alphaPercentage) {
+    const context = this.canvas_.getContext('2d');
+    context.globalAlpha = alphaPercentage;
+    context.drawImage(this.offscreenCanvas_, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+  }
+
+  /**
+   * Composes the image offscreen at 100% opacity, then uses it for fading in.
+   * If these draw calls are done with opacity, a flash would be visible.
+   * This is due to the black fill being a high contrast compared to the image.
+   * The black fill is always needed in case the image is a transparent png.
+   * @private
+   * @param {?Element} fillElement
+   */
+  drawOffscreenCanvas_(fillElement) {
+    const context = this.offscreenCanvas_.getContext('2d');
+    // A black background in drawn first in case the image is a transparent PNG.
+    context.fillStyle = 'black';
+    context.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    if (fillElement) {
+      context.drawImage(fillElement, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+      // For background protection.
+      context.fillStyle = 'rgba(0, 0, 0, .3)';
+      context.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    }
+  }
+
+  /**
    * Get active page's biggest amp-img element.
    * @private
    * @param {!Element} pageElement
-   * @return {?Element} An img element or null.
+   * @return {?Element} An amp-img element or null.
    */
   getBiggestImage_(pageElement) {
     const getSize = (el) => {
@@ -123,8 +184,6 @@ export class BackgroundBlur {
     };
     return Array.from(
       scopedQuerySelectorAll(pageElement, 'amp-story-grid-layer amp-img')
-    )
-      .sort((firstEl, secondEl) => getSize(secondEl) - getSize(firstEl))[0]
-      ?.querySelector('img');
+    ).sort((firstEl, secondEl) => getSize(secondEl) - getSize(firstEl))[0];
   }
 }
