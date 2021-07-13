@@ -642,7 +642,7 @@ export class AmpA4A extends AMP.BaseElement {
         `<${this.element.tagName}> is not allowed to be ` +
           `placed in elements with position: fixed or sticky: ${this.element}`
       );
-      //return false;
+      return false;
     }
     // OnLayoutMeasure can be called when page is in prerender so delay until
     // visible.  Assume that it is ok to call isValidElement as it should

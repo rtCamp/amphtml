@@ -102,3 +102,11 @@ amp-sticky-ad[visible] > .amp-sticky-ad-close-button {
   right: -20px;
   left: 0;
 }
+
+amp-sticky-ad[sticky='sidebar'] {
+  position: relative !important;
+    left: unset !important;
+    bottom: unset !important;
+    width: unset !important;
+    display: contents !important;
+}

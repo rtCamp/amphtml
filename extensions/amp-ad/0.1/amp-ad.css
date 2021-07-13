@@ -181,3 +181,8 @@ amp-ad[sticky='right'] {
   top: 100px;
   right: 20px;
 }
+
+amp-ad[sticky='sidebar'] {
+  position: sticky;
+  top: 10px;
+}

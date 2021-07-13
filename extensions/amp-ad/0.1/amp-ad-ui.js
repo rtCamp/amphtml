@@ -39,6 +39,7 @@ const StickyAdPositions = {
   LEFT: 'left',
   RIGHT: 'right',
   BOTTOM: 'bottom',
+  SIDEBAR: 'sidebar',
   BOTTOM_RIGHT: 'bottom-right',
 };
 
