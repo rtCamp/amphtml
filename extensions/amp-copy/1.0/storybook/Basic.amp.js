@@ -31,10 +31,20 @@ export default {
 export const CopyInputValue = () => {
   return (
     <>
+      <amp-copy
+        id="cp1"
+        on="isDisabled:toggleClass(class='disabled', force=true), isEnabled:toggleClass(class='enabled', force=true)"
+      />
+
       <input type="text" id="myInputField1" value="Text to copy!" />
-      <amp-copy width="100" height="20" source-id="myInputField1">
-        Copy Text
-      </amp-copy>
+      <input type="text" id="myInputField2" value="My Test" />
+
+      <button on="tap:cp1.copyToClipboard(selector='myInputField1')">
+        Copy 1
+      </button>
+      <button on="tap:cp1.copyToClipboard(selector='myInputField2')">
+        Copy 2
+      </button>
     </>
   );
 };
@@ -45,9 +55,11 @@ export const CopyDIVContentText = () => {
       <div id="myDiv1">
         <p> hello world </p>
       </div>
-      <amp-copy width="100" height="20" source-id="myDiv1">
+      <amp-copy id="cp1" width="100" height="20" source-id="cp1">
         Copy Content
       </amp-copy>
+      <button on="tap:cp1.copyToClipboard(selector='myDiv1')">Copy</button>
+      <button on="tap:cp1.hide()">Hide</button>
     </>
   );
 };

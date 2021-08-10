@@ -27,26 +27,29 @@ import {
 import {forwardRef} from '#preact/compat';
 import {useStyles} from './component.jss';
 import objstr from 'obj-str';
+import {useRef} from 'preact/hooks';
 
 /**
  * @param {!CopyDef.Props} props
- * @param {{current: ?CopyDef.Api}} ref
+ * @param {{current: ?CopyDef.CopyApi}} ref
  * @return {PreactDef.Renderable}
  */
 export function CopyWithRef({children, sourceId, text, ...rest}, ref) {
+  const divRef = useRef(null);
   const [status, setStatus] = useState(null);
   const [isCopySupported, setIsCopySupported] = useState(false);
   const classes = useStyles();
+
   useLayoutEffect(() => {
-    if (!ref.current) {
+    if (!divRef.current) {
       return;
     }
-    if (isCopyingToClipboardSupported(ref.current.ownerDocument)) {
+    if (isCopyingToClipboardSupported(divRef.current.ownerDocument)) {
       setIsCopySupported(true);
     } else {
       setIsCopySupported(false);
     }
-  }, [ref, setIsCopySupported]);
+  }, [divRef, setIsCopySupported]);
 
   const copy = useCallback(
     (sourceId) => {
@@ -57,7 +60,7 @@ export function CopyWithRef({children, sourceId, text, ...rest}, ref) {
         textToCopy = text;
       } else {
         // Copy content of sourceId element
-        const content = ref.current.ownerDocument.getElementById(sourceId);
+        const content = divRef.current.ownerDocument.getElementById(sourceId);
         textToCopy = (content.value ?? content.textContent).trim();
       }
 
@@ -67,7 +70,7 @@ export function CopyWithRef({children, sourceId, text, ...rest}, ref) {
         setStatus(null);
       }, 3000);
     },
-    [ref, text]
+    [divRef, text]
   );
 
   const copyText = useCallback((textToCopy) => {
@@ -83,7 +86,7 @@ export function CopyWithRef({children, sourceId, text, ...rest}, ref) {
     ref,
     () =>
       /** @type {!CopyDef.CopyApi} */ ({
-        copyToClipboard: (selector, staticText) => {
+        copyToClipboard: (selector = null, staticText = null) => {
           if (selector !== null) {
             copy(selector);
           } else if (staticText !== null) {
@@ -96,24 +99,7 @@ export function CopyWithRef({children, sourceId, text, ...rest}, ref) {
     [copy, copyText]
   );
 
-  return (
-    <button
-      ref={ref}
-      className={objstr({
-        [classes.success]: status,
-        [classes.failed]: status === false,
-        [classes.enabled]: isCopySupported,
-        [classes.disabled]: !isCopySupported,
-      })}
-      layout
-      size
-      paint
-      {...rest}
-      onClick={() => copy(sourceId)}
-    >
-      {children}
-    </button>
-  );
+  return <div ref={divRef}></div>;
 }
 
 const Copy = forwardRef(CopyWithRef);
