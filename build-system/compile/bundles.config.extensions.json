@@ -141,6 +141,15 @@
     "latestVersion": "0.1"
   },
   {
+    "name": "amp-animation",
+    "version": "1.0",
+    "latestVersion": "0.1",
+    "options": {
+      "npm": true,
+      "wrapper": "bento"
+    }
+  },
+  {
     "name": "amp-animation-polyfill",
     "version": "0.1",
     "latestVersion": "0.1"
