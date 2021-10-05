@@ -23,21 +23,17 @@ export const _default = () => {
   return (
     <BentoImageSlider
       initialSliderPosition={0.5}
-      firstImageAs={(props, ref) => {
-        return (
-          <img
-            ref={ref}
-            src={first}
-            alt="A green apple"
-            {...props}
-            style={{width: 600, height: 300}}
-          />
-        );
-      }}
-      firstLabelAs={(props) => <div {...props}>Clear picture</div>}
-      secondImageAs={(props, ref) => (
+      firstImageAs={(props) => (
         <img
-          ref={ref}
+          src={first}
+          alt="A green apple"
+          {...props}
+          style={{width: 600, height: 300}}
+        />
+      )}
+      firstLabelAs={(props) => <div {...props}>Clear picture</div>}
+      secondImageAs={(props) => (
+        <img
           src={second}
           alt="A red apple"
           {...props}

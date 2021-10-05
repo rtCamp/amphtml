@@ -30,8 +30,11 @@ const VALID_IMAGE_TAGNAMES = new Set(['AMP-IMG', 'IMG']);
  * @return {PreactDef.Renderable}
  */
 function DisplayAsWithRef({as: Comp = 'div', ...rest}, ref) {
-  const CompRef = forwardRef(Comp);
-  return <CompRef {...rest} ref={ref} />;
+  return (
+    <div ref={ref}>
+      <Comp {...rest} />
+    </div>
+  );
 }
 
 const DisplayAs = forwardRef(DisplayAsWithRef);
