@@ -12,7 +12,9 @@ const path = require('path');
 const {cyan} = require('kleur/colors');
 const {getLoggingPrefix, logWithoutTimestamp} = require('../common/logging');
 const {gitDiffNameOnlyMain} = require('../common/git');
+const {ignoreListFiles} = require('../tasks/check-ignore-lists');
 const {isCiBuild} = require('../common/ci');
+const {shouldTriggerAva} = require('../tasks/ava');
 
 /**
  * Used to prevent the repeated recomputing of build targets during PR jobs.
@@ -38,6 +40,7 @@ const Targets = {
   DOCS: 'DOCS',
   E2E_TEST: 'E2E_TEST',
   HTML_FIXTURES: 'HTML_FIXTURES',
+  IGNORE_LIST: 'IGNORE_LIST',
   INTEGRATION_TEST: 'INTEGRATION_TEST',
   INVALID_WHITESPACES: 'INVALID_WHITESPACES',
   LINT: 'LINT',
@@ -66,6 +69,7 @@ const nonRuntimeTargets = [
   Targets.DEV_DASHBOARD,
   Targets.DOCS,
   Targets.E2E_TEST,
+  Targets.IGNORE_LIST,
   Targets.INTEGRATION_TEST,
   Targets.OWNERS,
   Targets.RENOVATE_CONFIG,
@@ -112,15 +116,7 @@ const targetMatchers = {
     if (isOwnersFile(file)) {
       return false;
     }
-    return (
-      file == 'build-system/tasks/ava.js' ||
-      file.startsWith('build-system/release-tagger/') ||
-      file.startsWith('build-system/server/') ||
-      file.startsWith('build-system/tasks/get-zindex/') ||
-      file.startsWith('build-system/tasks/make-extension/') ||
-      file.startsWith('build-system/tasks/markdown-toc/') ||
-      file.startsWith('build-system/tasks/prepend-global/')
-    );
+    return shouldTriggerAva(file);
   },
   [Targets.BABEL_PLUGIN]: (file) => {
     if (isOwnersFile(file)) {
@@ -185,6 +181,13 @@ const targetMatchers = {
       fileLists.htmlFixtureFiles.includes(file) ||
       file == 'build-system/tasks/validate-html-fixtures.js' ||
       file.startsWith('build-system/test-configs')
+    );
+  },
+  [Targets.IGNORE_LIST]: (file) => {
+    return (
+      ignoreListFiles.includes(file) ||
+      file === 'build-system/tasks/check-ignore-list.js' ||
+      file === 'build-system/tasks/clean.js'
     );
   },
   [Targets.INTEGRATION_TEST]: (file) => {
