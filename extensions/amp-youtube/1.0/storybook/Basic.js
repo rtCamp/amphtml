@@ -29,14 +29,17 @@ export const _default = () => {
   const params = object('params', {});
   const credentials = text('credentials', 'include');
   return (
-    <BentoYoutube
-      autoplay={autoplay}
-      loop={loop}
-      videoid={videoid}
-      params={params}
-      style={{width, height}}
-      credentials={credentials}
-    />
+    <>
+      <div style="height:1000px">Scroll down to load the embed</div>
+      <BentoYoutube
+        autoplay={autoplay}
+        loop={loop}
+        videoid={videoid}
+        params={params}
+        style={{width, height}}
+        credentials={credentials}
+      />
+    </>
   );
 };
 

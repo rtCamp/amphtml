@@ -2,9 +2,10 @@ import {dict} from '#core/types/object';
 import {parseJson} from '#core/types/object/json';
 
 import * as Preact from '#preact';
-import {useCallback, useEffect, useRef} from '#preact';
-import {useValueRef} from '#preact/component';
+import {useCallback, useEffect, useRef, useState} from '#preact';
+import {useIntersectionObserver, useValueRef} from '#preact/component';
 import {IframeEmbed} from '#preact/component/iframe';
+import {useMergeRefs} from '#preact/utils';
 
 import {getData} from '#utils/event-helper';
 
@@ -28,6 +29,23 @@ export function BentoSoundcloud({
   // Property and Reference Variables
   const iframeRef = useRef(null);
   const onLoadRef = useValueRef(onLoad);
+
+  const [inView, setinView] = useState(false);
+
+  const observerCb = useIntersectionObserver(({isIntersecting}) => {
+    if (isIntersecting) {
+      setinView(true);
+
+      // unobserve element once it's rendered
+      observerCb(null);
+    }
+  });
+
+  const observerCbRef = (containerNode) => {
+    observerCb(containerNode);
+  };
+
+  const containerRef = useMergeRefs([iframeRef, observerCbRef]);
 
   useEffect(() => {
     /** Unmount Procedure */
@@ -86,17 +104,20 @@ export function BentoSoundcloud({
   }
 
   return (
-    <IframeEmbed
-      allow="autoplay"
-      frameborder="no"
-      ref={iframeRef}
-      scrolling="no"
-      src={iframeSrc}
-      title={'Soundcloud Widget - ' + mediaId}
-      messageHandler={messageHandler}
-      matchesMessagingOrigin={MATCHES_MESSAGING_ORIGIN}
-      {...rest}
-    />
+    <div ref={containerRef}>
+      {inView && (
+        <IframeEmbed
+          allow="autoplay"
+          frameborder="no"
+          scrolling="no"
+          src={iframeSrc}
+          title={'Soundcloud Widget - ' + mediaId}
+          messageHandler={messageHandler}
+          matchesMessagingOrigin={MATCHES_MESSAGING_ORIGIN}
+          {...rest}
+        />
+      )}
+    </div>
   );
 }
 

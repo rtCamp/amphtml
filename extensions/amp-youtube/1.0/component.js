@@ -2,8 +2,10 @@ import {dispatchCustomEvent} from '#core/dom';
 import {dict} from '#core/types/object';
 
 import * as Preact from '#preact';
-import {useRef} from '#preact';
+import {useRef, useState} from '#preact';
 import {forwardRef} from '#preact/compat';
+import {useIntersectionObserver} from '#preact/component';
+import {useMergeRefs} from '#preact/utils';
 
 import {mutedOrUnmutedEvent, objOrParseJson} from '../../../src/iframe-video';
 import {addParamsToUrl} from '../../../src/url';
@@ -176,29 +178,50 @@ function BentoYoutubeWithRef(
     }
   };
 
+  const [inView, setinView] = useState(false);
+
+  const observerCb = useIntersectionObserver(({isIntersecting}) => {
+    if (isIntersecting) {
+      setinView(true);
+
+      // unobserve element once it's rendered
+      observerCb(null);
+    }
+  });
+
+  const observerCbRef = (containerNode) => {
+    observerCb(containerNode);
+  };
+
+  const containerRef = useMergeRefs([ref, observerCbRef]);
+
   return (
-    <VideoIframe
-      ref={ref}
-      {...rest}
-      autoplay={autoplay}
-      src={src}
-      onMessage={onMessage}
-      makeMethodMessage={makeMethodMessage}
-      onIframeLoad={(event) => {
-        const {currentTarget} = event;
-        dispatchVideoEvent(currentTarget, 'canplay');
-        currentTarget.contentWindow./*OK*/ postMessage(
-          JSON.stringify(
-            dict({
-              'event': 'listening',
-            })
-          ),
-          '*'
-        );
-      }}
-      sandbox="allow-scripts allow-same-origin allow-presentation"
-      playerStateRef={playerStateRef}
-    />
+    <div ref={containerRef}>
+      {inView && (
+        <VideoIframe
+          ref={ref}
+          {...rest}
+          autoplay={autoplay}
+          src={src}
+          onMessage={onMessage}
+          makeMethodMessage={makeMethodMessage}
+          onIframeLoad={(event) => {
+            const {currentTarget} = event;
+            dispatchVideoEvent(currentTarget, 'canplay');
+            currentTarget.contentWindow./*OK*/ postMessage(
+              JSON.stringify(
+                dict({
+                  'event': 'listening',
+                })
+              ),
+              '*'
+            );
+          }}
+          sandbox="allow-scripts allow-same-origin allow-presentation"
+          playerStateRef={playerStateRef}
+        />
+      )}
+    </div>
   );
 }
 

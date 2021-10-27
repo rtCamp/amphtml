@@ -23,12 +23,15 @@ export const track = () => {
 
   // Render Preact Component
   return (
-    <BentoSoundcloud
-      color={hex}
-      style={{height: '240px'}}
-      trackId={trackid}
-      visual={visual}
-    />
+    <>
+      <div style="height:1000px">Scroll down to load the embed</div>
+      <BentoSoundcloud
+        color={hex}
+        style={{height: '240px'}}
+        trackId={trackid}
+        visual={visual}
+      />
+    </>
   );
 };
 
