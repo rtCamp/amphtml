@@ -14,7 +14,7 @@ import {getWin} from '#core/window';
  * @return {!IntersectionObserver}
  */
 export function createViewportObserver(ioCallback, win, opts = {}) {
-  const {needsRootBounds, threshold} = opts;
+  const {needsRootBounds, rootMargin, threshold} = opts;
   // The Document -> Element type conversion is necessary to satisfy the
   // `IntersectionObserver` constructor extern that only accepts `Element`.
   const root =
@@ -23,6 +23,7 @@ export function createViewportObserver(ioCallback, win, opts = {}) {
       : undefined;
   return new win.IntersectionObserver(ioCallback, {
     threshold,
+    rootMargin,
     root,
   });
 }
@@ -39,15 +40,16 @@ const viewportCallbacks = new WeakMap();
  *
  * @param {!Element} element
  * @param {function(IntersectionObserverEntry)} callback
+ * @param opts
  * @return {!UnlistenDef} clean up closure to unobserve the element
  */
-export function observeIntersections(element, callback) {
+export function observeIntersections(element, callback, opts = {}) {
   const win = getWin(element);
   let viewportObserver = viewportObservers.get(win);
   if (!viewportObserver) {
     viewportObservers.set(
       win,
-      (viewportObserver = createViewportObserver(ioCallback, win))
+      (viewportObserver = createViewportObserver(ioCallback, win, opts))
     );
   }
   let callbacks = viewportCallbacks.get(element);

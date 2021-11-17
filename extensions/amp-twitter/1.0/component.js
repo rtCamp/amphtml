@@ -107,20 +107,23 @@ function BentoTwitterWithRef(
     ]
   );
 
-  const observerCb = useIntersectionObserver(({isIntersecting, target}) => {
-    if (isIntersecting) {
-      setinView(true);
+  const observerCb = useIntersectionObserver(
+    ({isIntersecting, target}) => {
+      if (isIntersecting) {
+        setinView(true);
 
-      /**
-       * Get Main bento-twitter reference. Used the alternative way here to
-       * get the <bento-twitter> reference as using offsetParent is forbidden.
-       */
-      bentoTwitterRef.current = target.parentNode.parentNode.host;
+        /**
+         * Get Main bento-twitter reference. Used the alternative way here to
+         * get the <bento-twitter> reference as using offsetParent is forbidden.
+         */
+        bentoTwitterRef.current = target.parentNode.parentNode.host;
 
-      // unobserve element once it's rendered
-      observerCb(null);
-    }
-  });
+        // unobserve element once it's rendered
+        observerCb(null);
+      }
+    },
+    {rootMargin: '0px 0px 500px 0px'}
+  );
 
   const observerCbRef = (containerNode) => {
     observerCb(containerNode);
