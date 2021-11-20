@@ -336,6 +336,14 @@
     }
   },
   {
+    "name": "amp-dismiss",
+    "version": "1.0",
+    "latestVersion": "1.0",
+    "options": {
+      "bento": true
+    }
+  },
+  {
     "name": "amp-dynamic-css-classes",
     "version": "0.1",
     "latestVersion": "0.1"
