@@ -125,7 +125,11 @@ A Bento Component is a Preact functional component. Here's basic structure of a 
 
 ![Bento Component Structure](img/Bento-Program-Structure.png)
 
-In context of this example, "Hello World" should be printed on ViewPort. Contents that need to be on ViewPort should be written in `Output Block`. So, our code should be:
+In context of this example, "Hello World" should be rendered in ViewPort.
+
+Contents that need to be on ViewPort should be written in `Output Block`.
+
+So, file `extensions/amp-hello-world/1.0/component.js` should be:
 
 ```jsx
 import * as Preact from '#preact';
