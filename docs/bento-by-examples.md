@@ -1,4 +1,4 @@
-# Bento by Examples
+# Bento by Example
 > Detailed writeup of What is AMP & Bento? Benefits of Bento? What is Preact?
 
 ## Table of Contents
@@ -9,7 +9,7 @@
 - [Directory Structure](#directory-structure)
 - [Bridge between AMP and Bento](#bridge-between-amp-and-bento)
 - [Execution Flow](#execution-flow)
-- [Examples](#examples)
+- [Example](#example)
   - [Beginner](#beginner)
     - [Example 1: Hello World](#example-1-hello-world)
       - [Create Bento Component:](#create-bento-component)
@@ -71,7 +71,7 @@ npm install
 > Represent & explain execution flow of Bento Component (created on miro)
 ![Execution Flow: Preact Component](img/Preact%20Functional%20Component.jpg "Preact Functional Component")
 
-## Examples
+## Example
 > Summarize example structure that is divided into three major parts: Beginner, Intermediate and Advance
 
 ### Beginner
