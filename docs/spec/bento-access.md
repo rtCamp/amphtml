@@ -1,6 +1,12 @@
 # Bento Access
 `bento-access` is similar to the `amp-access` but in addition, it provides `localStorage` feature to store variables in order to minimize unnecessary server requests.
 
+> **Add-on Feature**
+> 
+> The content which is to be shown to `donated/paid` users, can be returned via API call on paywall content. This will check for the authorization by using `access-origin` header.
+>
+> The main goal of this is to prevent access to `paid/private` content via inspect element or DOM scrapping.
+
 ## Configuration
 In order to have `bento-access` track variable between server and `localStorage`, configuration is needed. In `bento-access`, a variable is similar to `amp-access` visibility property.
 
@@ -11,8 +17,8 @@ Configuration provides detail about when to send or request server for the varia
 {
     "conditional-variable-1": {
         /* Conditional Check       : Check Operator with Value            */,
-        /* Default Operation Block : Command Array to Execute             */ ,
-        /* True Operation Block    : Command Array to Execute             */ ,
+        /* Default Operation Block : Command Array to Execute             */,
+        /* True Operation Block    : Command Array to Execute             */,
         /* False Operation Block   : Command Array to Execute  [OPTIONAL] */
     },
     "operational-variable-1": {
