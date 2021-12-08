@@ -125,7 +125,7 @@ Second configuration does two things:
 Usage in HTML:
 ```html
 <section bento-access="visitCount < 10">
-  This section is only visible if user has not donated!
+  This section is visible only 10 times per user!
 </section>
 ```
 
