@@ -49,8 +49,8 @@ Here, each variable must have it's own configuration. There are two types of var
    - When it is needed to track or count visit, this type of variable configuration is needed.
    - Supported Operation:
      - "increment-by" value of the variable in `localStorage` by specified value
-    - "decrement-by" value of the variable in `localStorage` by specified value
-    - Sample: `increment-by 1 on page-visit/once-a-day/once-a-week`,
+     - "decrement-by" value of the variable in `localStorage` by specified value
+     - Sample: `increment-by 1 on page-visit/once-a-day/once-a-week`,
 
 #### Sample: Track `donated` variable
 ```json
