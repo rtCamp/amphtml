@@ -2,7 +2,7 @@
 `bento-access` is similar to the `amp-access` but in addition, it provides `localStorage` feature to store variables in order to minimize unnecessary server requests.
 
 ## Configuration
-In order to have `bento-access` track variable between server and `localStorage`, a configuration is needed. in `bento-access`, a variable is similar to `amp-access` visibility property.
+In order to have `bento-access` track variable between server and `localStorage`, configuration is needed. In `bento-access`, a variable is similar to `amp-access` visibility property.
 
 Configuration provides detail about when to send or request server for the variable and to store them into `localStorage`.
 
@@ -10,13 +10,13 @@ Configuration provides detail about when to send or request server for the varia
 ```json
 {
     "conditional-variable-1": {
-        /* Conditional Check       : Check Operator with Value [OPTIONAL] */,
-        /* Default Operation Block : Command Array to Execute  [OPTIONAL] */ ,
+        /* Conditional Check       : Check Operator with Value            */,
+        /* Default Operation Block : Command Array to Execute             */ ,
         /* True Operation Block    : Command Array to Execute             */ ,
         /* False Operation Block   : Command Array to Execute  [OPTIONAL] */
     },
     "operational-variable-1": {
-        /* Operation Block         : Command Array to Execute  [OPTIONAL] */,
+        /* Operation Block         : Command Array to Execute             */,
     },
     ...
 }
