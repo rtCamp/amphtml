@@ -27,11 +27,12 @@ const VALID_IMAGE_TAGNAMES = new Set(['AMP-IMG', 'IMG']);
  * Displays given component with supplied props.
  * @param {*} props
  * @param {{current: ?Element}} ref
+ * @param containerClass
  * @return {PreactDef.Renderable}
  */
-function DisplayAsWithRef({as: Comp = 'div', ...rest}, ref) {
+function DisplayAsWithRef({as: Comp = 'div', containerClass, ...rest}, ref) {
   return (
-    <div ref={ref}>
+    <div ref={ref} class={containerClass}>
       <Comp {...rest} />
     </div>
   );
@@ -163,19 +164,22 @@ export function BentoImageSliderWithRef(
     unlisten,
   ]);
 
-  const pointerMoveX = useCallback((pointerX) => {
-    // This is to address the "snap to leftmost" bug that occurs on
-    // pointer down after scrolling away and back 3+ slides
-    // layoutBox is not updated correctly when first landed on page
+  const pointerMoveX = useCallback(
+    (pointerX) => {
+      // This is to address the "snap to leftmost" bug that occurs on
+      // pointer down after scrolling away and back 3+ slides
+      // layoutBox is not updated correctly when first landed on page
 
-    const rect = containerRef.current./*OK*/ getBoundingClientRect();
-    const {left, right, width} = rect;
+      const rect = containerRef.current./*OK*/ getBoundingClientRect();
+      const {left, right, width} = rect;
 
-    const newPos = clamp(pointerX, left, right);
-    const newPercentage = (newPos - left) / width;
+      const newPos = clamp(pointerX, left, right);
+      const newPercentage = (newPos - left) / width;
 
-    //this.updatePositions_(newPercentage);
-  }, []);
+      updatePositions(newPercentage);
+    },
+    [updatePositions]
+  );
 
   const registerTouchGestures = useCallback(() => {
     if (gesturesRef.current) {
@@ -233,12 +237,6 @@ export function BentoImageSliderWithRef(
     const {left: barLeft} = barRef.current./*OK*/ getBoundingClientRect();
     const {left: boxLeft, width: boxWidth} =
       containerRef.current./*OK*/ getBoundingClientRect();
-    console /*OK*/
-      .log(barLeft);
-    console /*OK*/
-      .log(boxLeft);
-    console /*OK*/
-      .log((barLeft - boxLeft) / boxWidth);
     return (barLeft - boxLeft) / boxWidth;
   }, []);
 
@@ -253,7 +251,7 @@ export function BentoImageSliderWithRef(
       percentFromLeft = limitPercentage(percentFromLeft);
 
       updateTranslateX(barRef.current, percentFromLeft);
-      updateTranslateX(rightMaskRef.current, percentFromLeft * 2);
+      updateTranslateX(rightMaskRef.current, percentFromLeft);
       updateTranslateX(rightImageRef.current, -percentFromLeft);
       const adjustedDeltaFromLeft = percentFromLeft - 0.5;
       updateTranslateX(leftHintBodyRef.current, adjustedDeltaFromLeft);
@@ -479,23 +477,21 @@ export function BentoImageSliderWithRef(
       tabIndex="0"
       autoFocus="true"
       onMouseDown={onMouseDown}
-      onMouseMove={onMouseMove}
+      // onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
       {...rest}
     >
       {/* Masks */}
       <div ref={leftMaskRef} class={styles.imageSliderLeftMask}>
         <div ref={leftLabelWrapperRef} class={styles.imageSliderLabelWrapper}>
-          <div ref={leftLabelRef}>
-            <DisplayAs as={firstLabelAs} />
-          </div>
-          <DisplayAs as={firstImageAs} ref={leftImageRef} />
+          <DisplayAs as={firstLabelAs} ref={leftLabelRef} />
           {/* <img
             src="https://amp.dev/static/samples/img/canoe_900x600.jpg"
             ref={leftImageRef}
             style={{width: 600, height: 300}}
           /> */}
         </div>
+        <DisplayAs as={firstImageAs} ref={leftImageRef} />
       </div>
       <div
         ref={rightMaskRef}
@@ -514,13 +510,33 @@ export function BentoImageSliderWithRef(
           <div ref={rightLabelRef}>
             <DisplayAs as={secondLabelAs} />
           </div>
-          <DisplayAs as={secondImageAs} ref={rightImageRef} />
           {/* <img
             src="https://amp.dev/static/samples/img/canoe_900x600_blur.jpg"
             ref={rightImageRef}
             style={{width: 600, height: 300}}
           /> */}
         </div>
+        <DisplayAs
+          as={secondImageAs}
+          ref={rightImageRef}
+          containerClass={styles.imageSliderPushLeft}
+        />
+      </div>
+
+      {/* Bar */}
+      <div
+        class={objstr({
+          [styles.imageSliderBar]: true,
+          [styles.imageSliderPushRight]: true,
+        })}
+        ref={barRef}
+      >
+        <div
+          class={objstr({
+            [styles.imageSliderBarStick]: true,
+            [styles.imageSliderPushLeft]: true,
+          })}
+        />
       </div>
 
       {/* Hint Body */}
@@ -544,23 +560,6 @@ export function BentoImageSliderWithRef(
       >
         <div ref={rightHintWrapper} class={styles.imageSliderHintRightWrapper}>
           <div ref={rightHintArrowRef} class={styles.imageSliderHintRight} />
-        </div>
-      </div>
-
-      {/* Bar */}
-      <div ref={barRef}>
-        <div
-          class={objstr({
-            [styles.imageSliderBar]: true,
-            [styles.imageSliderPushRight]: true,
-          })}
-        >
-          <div
-            class={objstr({
-              [styles.imageSliderBarStick]: true,
-              [styles.imageSliderPushLeft]: true,
-            })}
-          />
         </div>
       </div>
     </div>
