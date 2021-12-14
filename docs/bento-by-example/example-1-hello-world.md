@@ -111,6 +111,13 @@ export function BentoHelloWorld({...rest}) {
 
 Now, it is much cleaner to understand. Upon calling `BentoHelloWorld`, it will render `Hello World` on the scree.
 
+> **What is `ContainWrapper`?**
+> 
+> The wrapper component that implements different "contain" parameters. This most often indicates that the element's size doesn't depend on its children (e.g. `contain:size`), but there might be other variances as well.
+> 
+> For more information, visit: https://developer.mozilla.org/en-US/docs/Web/CSS/contain
+
+
 ## Test
 
 To test a Bento Component, storybook is provided. There are two types of storybook testing environment:
