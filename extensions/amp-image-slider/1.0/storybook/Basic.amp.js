@@ -30,8 +30,18 @@ export const ExampleUseCase = () => {
       height="200"
       initial-slider-position="0"
     >
-      <amp-img slot="first-image" src={first} alt="A green apple"></amp-img>
-      <amp-img slot="second-image" src={second} alt="A red apple"></amp-img>
+      <amp-img
+        slot="first-image"
+        src={first}
+        alt="A green apple"
+        layout="fill"
+      ></amp-img>
+      <amp-img
+        slot="second-image"
+        src={second}
+        alt="A red apple"
+        layout="fill"
+      ></amp-img>
       <div slot="first-label">Clear Picture</div>
       <div slot="second-label">Blur Picture</div>
     </amp-image-slider>

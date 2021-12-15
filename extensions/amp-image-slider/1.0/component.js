@@ -484,12 +484,11 @@ export function BentoImageSliderWithRef(
       {/* Masks */}
       <div ref={leftMaskRef} class={styles.imageSliderLeftMask}>
         <div ref={leftLabelWrapperRef} class={styles.imageSliderLabelWrapper}>
-          <DisplayAs as={firstLabelAs} ref={leftLabelRef} />
-          {/* <img
-            src="https://amp.dev/static/samples/img/canoe_900x600.jpg"
-            ref={leftImageRef}
-            style={{width: 600, height: 300}}
-          /> */}
+          <DisplayAs
+            as={firstLabelAs}
+            ref={leftLabelRef}
+            containerClass="label label-left-center"
+          />
         </div>
         <DisplayAs as={firstImageAs} ref={leftImageRef} />
       </div>
@@ -507,20 +506,18 @@ export function BentoImageSliderWithRef(
             [styles.imageSliderPushLeft]: true,
           })}
         >
-          <div ref={rightLabelRef}>
-            <DisplayAs as={secondLabelAs} />
-          </div>
-          {/* <img
-            src="https://amp.dev/static/samples/img/canoe_900x600_blur.jpg"
-            ref={rightImageRef}
-            style={{width: 600, height: 300}}
-          /> */}
+          <DisplayAs
+            ref={rightLabelRef}
+            containerClass="label label-right-center"
+            as={secondLabelAs}
+          />
         </div>
-        <DisplayAs
-          as={secondImageAs}
-          ref={rightImageRef}
-          containerClass={styles.imageSliderPushLeft}
-        />
+        <amp-img
+          slot="first-image"
+          src={'https://amp.dev/static/sampls/img/canoe_900x600.jpg'}
+          alt="A green apple"
+          layout="fill"
+        ></amp-img>
       </div>
 
       {/* Bar */}
