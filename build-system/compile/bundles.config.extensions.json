@@ -394,6 +394,14 @@
     }
   },
   {
+    "name": "amp-hello-world",
+    "version": "1.0",
+    "options": {
+      "hasCss": true,
+      "bento": true
+    }
+  },
+  {
     "name": "amp-hulu",
     "version": "0.1"
   },
