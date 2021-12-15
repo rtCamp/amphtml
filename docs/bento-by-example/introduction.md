@@ -1,6 +1,12 @@
 # Bento by Examples
 > Detailed writeup of What is AMP & Bento? Benefits of Bento? What is Preact?
 
+1 - hello world - : create, write, test
+2 - greetings   - : useState, useEffect, useLayoutEffect
+3 - counter     - : useState, useCallback
+4 - curr conv   - : att map, jss, css
+5 -  carousel   - : action, event, child mapping
+
 ## Table of Contents
 - [Bento by Examples](#bento-by-examples)
   - [Table of Contents](#table-of-contents)

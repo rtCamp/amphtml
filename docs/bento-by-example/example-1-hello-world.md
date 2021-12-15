@@ -91,7 +91,7 @@ export function BentoHelloWorld({exampleTagNameProp, ...rest}) {
 
 Let's remove unnecessary code to make it simple to understand:
 
-```js
+```javascript
 import * as Preact from '#preact';
 import {ContainWrapper} from '#preact/component';
 
