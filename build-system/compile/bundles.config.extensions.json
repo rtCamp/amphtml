@@ -236,6 +236,14 @@
     }
   },
   {
+    "name": "amp-counter",
+    "version": "1.0",
+    "options": {
+      "hasCss": true,
+      "bento": true
+    }
+  },
+  {
     "name": "amp-crypto-polyfill",
     "version": "0.1"
   },
