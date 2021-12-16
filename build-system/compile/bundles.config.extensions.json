@@ -387,6 +387,14 @@
     "version": "0.1"
   },
   {
+    "name": "amp-greeting",
+    "version": "1.0",
+    "options": {
+      "hasCss": true,
+      "bento": true
+    }
+  },
+  {
     "name": "amp-gwd-animation",
     "version": "0.1",
     "options": {
