@@ -28,15 +28,13 @@ export function BentoCounter({...rest}) {
 
   return (
     <ContainWrapper layout size paint {...rest}>
-      <div>
-        <span style={{'margin': 10}}>
-          <button onClick={incrementCounter}>+</button>
-        </span>
-        <span style={{'margin': 10}}>{counterValue}</span>
-        <span style={{'margin': 10}}>
-          <button onClick={decrementCounter}>-</button>
-        </span>
-      </div>
+      <span style={{'margin': 10}}>
+        <button onClick={incrementCounter}>+</button>
+      </span>
+      <span style={{'margin': 10}}>{counterValue}</span>
+      <span style={{'margin': 10}}>
+        <button onClick={decrementCounter}>-</button>
+      </span>
     </ContainWrapper>
   );
 }
