@@ -22,8 +22,6 @@ import {Gestures} from '../../../src/gesture';
 import {SwipeXRecognizer} from '../../../src/gesture-recognizers';
 import {initLogConstructor} from '../../../src/log';
 
-const VALID_IMAGE_TAGNAMES = new Set(['AMP-IMG', 'IMG']);
-
 initLogConstructor();
 installTimerService(global);
 
@@ -457,12 +455,6 @@ export function BentoImageSliderWithRef(
     // checkARIA();
     registerEvents();
   }, [registerEvents]);
-  useLayoutEffect(() => {
-    /* Do things */
-  }, []);
-  useMemo(() => {
-    /* Do things */
-  }, []);
 
   /** API Function */
   useImperativeHandle(
