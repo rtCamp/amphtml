@@ -1,0 +1,27 @@
+tags: {  # amp-wvp-carousel
+  html_format: AMP
+  tag_name: "SCRIPT"
+  extension_spec: {
+    name: "amp-wvp-carousel"
+    version: "1.0"
+    version: "latest"
+  }
+  attr_lists: "common-extension-attrs"
+}
+tags: {  # <amp-wvp-carousel>
+  html_format: AMP
+  tag_name: "WVP-CAROUSEL"
+  requires_extension: "amp-wvp-carousel"
+  attr_lists: "extended-amp-global"
+  spec_url: "https://amp.dev/documentation/components/amp-wvp-carousel/"
+  amp_layout: {
+    supported_layouts: CONTAINER
+    supported_layouts: FILL
+    supported_layouts: FIXED
+    supported_layouts: FIXED_HEIGHT
+    supported_layouts: FLEX_ITEM
+    supported_layouts: INTRINSIC
+    supported_layouts: NODISPLAY
+    supported_layouts: RESPONSIVE
+  }
+}

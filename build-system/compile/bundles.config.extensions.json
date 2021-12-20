@@ -1099,6 +1099,14 @@
     }
   },
   {
+    "name": "amp-wvp-carousel",
+    "version": "1.0",
+    "options": {
+      "hasCss": true,
+      "bento": true
+    }
+  },
+  {
     "name": "amp-yotpo",
     "version": "0.1"
   },
