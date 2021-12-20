@@ -8,20 +8,24 @@ import {
   useCallback,
   useEffect,
   useImperativeHandle,
-  useLayoutEffect,
-  useMemo,
   useRef,
   useState,
 } from '#preact';
 import {forwardRef} from '#preact/compat';
+
+import {installTimerService} from '#service/timer-impl';
 
 import {useStyles} from './component.jss';
 
 import {listen} from '../../../src/event-helper';
 import {Gestures} from '../../../src/gesture';
 import {SwipeXRecognizer} from '../../../src/gesture-recognizers';
+import {initLogConstructor} from '../../../src/log';
 
 const VALID_IMAGE_TAGNAMES = new Set(['AMP-IMG', 'IMG']);
+
+initLogConstructor();
+installTimerService(global);
 
 /**
  * Displays given component with supplied props.
@@ -429,9 +433,14 @@ export function BentoImageSliderWithRef(
       'keydown',
       onKeyDown
     );
-    //registerTouchGestures();
-    //this.isEventRegistered = true;
-  }, [unlistenKeyDown, isEventRegistered, onMouseDown, onKeyDown]);
+    registerTouchGestures();
+  }, [
+    unlistenKeyDown,
+    isEventRegistered,
+    onMouseDown,
+    onKeyDown,
+    registerTouchGestures,
+  ]);
 
   useEffect(() => {
     /** Common variables */
@@ -484,12 +493,11 @@ export function BentoImageSliderWithRef(
       {/* Masks */}
       <div ref={leftMaskRef} class={styles.imageSliderLeftMask}>
         <div ref={leftLabelWrapperRef} class={styles.imageSliderLabelWrapper}>
-          <DisplayAs as={firstLabelAs} ref={leftLabelRef} />
-          {/* <img
-            src="https://amp.dev/static/samples/img/canoe_900x600.jpg"
-            ref={leftImageRef}
-            style={{width: 600, height: 300}}
-          /> */}
+          <DisplayAs
+            as={firstLabelAs}
+            ref={leftLabelRef}
+            containerClass="label label-left-center"
+          />
         </div>
         <DisplayAs as={firstImageAs} ref={leftImageRef} />
       </div>
@@ -507,14 +515,11 @@ export function BentoImageSliderWithRef(
             [styles.imageSliderPushLeft]: true,
           })}
         >
-          <div ref={rightLabelRef}>
-            <DisplayAs as={secondLabelAs} />
-          </div>
-          {/* <img
-            src="https://amp.dev/static/samples/img/canoe_900x600_blur.jpg"
-            ref={rightImageRef}
-            style={{width: 600, height: 300}}
-          /> */}
+          <DisplayAs
+            ref={rightLabelRef}
+            containerClass="label label-right-center"
+            as={secondLabelAs}
+          />
         </div>
         <DisplayAs
           as={secondImageAs}
