@@ -22,6 +22,10 @@ import {Gestures} from '../../../src/gesture';
 import {SwipeXRecognizer} from '../../../src/gesture-recognizers';
 import {initLogConstructor} from '../../../src/log';
 
+/**
+ * Using Gestures class throws console error for failed to call initLogConstructor
+ * so we need to explicity call it.
+ */
 initLogConstructor();
 installTimerService(global);
 
@@ -34,6 +38,7 @@ installTimerService(global);
  */
 function DisplayAsWithRef({as: Comp = 'div', containerClass, ...rest}, ref) {
   return (
+    /** Need containerClass to add jss Styling to the component container */
     <div ref={ref} class={containerClass}>
       <Comp {...rest} />
     </div>
