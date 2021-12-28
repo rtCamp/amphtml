@@ -34,7 +34,7 @@ installTimerService(global);
  * Displays given component with supplied props.
  * @param {*} props
  * @param {{current: ?Element}} ref
- * @param containerClass
+ * @param {string} containerClass
  * @return {PreactDef.Renderable}
  */
 function DisplayAsWithRef({as: Comp = 'div', containerClass, ...rest}, ref) {
@@ -60,6 +60,8 @@ export function BentoImageSliderWithRef(
     firstLabelAs,
     initialPosition,
     labels,
+    leftHintAs,
+    rightHintAs,
     secondImageAs,
     secondLabelAs,
     stepSize = 0.1,
@@ -460,6 +462,9 @@ export function BentoImageSliderWithRef(
     // buildHint();
     // checkARIA();
     registerEvents();
+    if (initialPosition) {
+      updatePositions(initialPosition);
+    }
   }, [registerEvents]);
 
   /** API Function */
@@ -491,11 +496,7 @@ export function BentoImageSliderWithRef(
       {/* Masks */}
       <div ref={leftMaskRef} class={styles.imageSliderLeftMask}>
         <div ref={leftLabelWrapperRef} class={styles.imageSliderLabelWrapper}>
-          <DisplayAs
-            as={firstLabelAs}
-            ref={leftLabelRef}
-            containerClass="label label-left-center"
-          />
+          <DisplayAs as={firstLabelAs} ref={leftLabelRef} />
         </div>
         <DisplayAs as={firstImageAs} ref={leftImageRef} />
       </div>
@@ -513,11 +514,7 @@ export function BentoImageSliderWithRef(
             [styles.imageSliderPushLeft]: true,
           })}
         >
-          <DisplayAs
-            ref={rightLabelRef}
-            containerClass="label label-right-center"
-            as={secondLabelAs}
-          />
+          <DisplayAs ref={rightLabelRef} as={secondLabelAs} />
         </div>
         <DisplayAs
           as={secondImageAs}
@@ -553,7 +550,11 @@ export function BentoImageSliderWithRef(
         })}
       >
         <div ref={leftHintWrapper} class={styles.imageSliderHintLeftWrapper}>
-          <div ref={leftHintArrowRef} class={styles.imageSliderHintLeft} />
+          <DisplayAs
+            as={leftHintAs}
+            ref={leftHintArrowRef}
+            class={styles.imageSliderHintLeft}
+          />
         </div>
       </div>
       <div
@@ -564,7 +565,11 @@ export function BentoImageSliderWithRef(
         })}
       >
         <div ref={rightHintWrapper} class={styles.imageSliderHintRightWrapper}>
-          <div ref={rightHintArrowRef} class={styles.imageSliderHintRight} />
+          <DisplayAs
+            as={rightHintAs}
+            ref={rightHintArrowRef}
+            class={styles.imageSliderHintRight}
+          />
         </div>
       </div>
     </div>
