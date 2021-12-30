@@ -12,6 +12,7 @@ describes.realWin(
       extensions: ['amp-adblock-detector:1.0', 'amp-ad:0.1'],
       //mockFetch: true,
     },
+    //mockFetch: true,
   },
   (env) => {
     let win;
@@ -26,10 +27,16 @@ describes.realWin(
     });
 
     it('should show fallback', async () => {
-      // env.fetchMock.get('https://doubleclick.net', {
-      //   'status': 404
-      // });
-
+      env.fetchMock.mock('https://doubleclick.net', 503);
+      debugger;
+      // win
+      //   .fetch('https://doubleclick.net')
+      //   .then((res) => {
+      //     console.log(res);
+      //   })
+      //   .catch((e) => {
+      //     console.log(e);
+      //   });
       const element = html`
         <amp-adblock-detector
           layout="fixed"
@@ -61,6 +68,8 @@ describes.realWin(
       await element.buildInternal();
       await element.layoutCallback();
       //console.log(element);
+      //debugger;
+      expect(env.fetchMock.done()).to.equal('x');
       expect(element.parentNode).to.equal(doc.body);
     });
   }

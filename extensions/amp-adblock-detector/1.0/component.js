@@ -81,7 +81,7 @@ export function BentoAdblockDetectorWithRef(
     fetch(adNetworkDomain, fetchOptions)
       .catch(() => {
         window.adBlockExtension.state = STATE_READY_BLOKER_DETECTED;
-
+        console./*OK*/ log('Blocked');
         /** AdBlocker won't allow to fetch from `url`, show `fallbackDiv` for the first extension */
         blockerDetectedCallback();
 
