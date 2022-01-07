@@ -1053,3 +1053,55 @@ describes.realWin('toggleTheme action', {amp: true}, (env) => {
     expect(setItemStub).to.be.calledOnce.and.calledWith('amp-dark-mode', 'yes');
   });
 });
+
+describes.realWin('copy action', {amp: true}, (env) => {
+  let ampdoc, standardActions, win;
+  beforeEach(() => {
+    ampdoc = new AmpDocSingle(window);
+    env.sandbox.stub(AmpDocService.prototype, 'getAmpDoc').returns(ampdoc);
+    win = env.win;
+    standardActions = new StandardActions(env.ampdoc);
+  });
+
+  function trustedInvocation(obj) {
+    return {satisfiesTrust: () => true, ...obj};
+  }
+
+  it('should copy from DIV', async () => {
+    const divElement = win.document.createElement('div');
+    // divElement.setAttribute('id', 'divElement');
+    divElement.textContent = 'Hello World!';
+
+    //const buttonElement = document.createElement('button');
+    //buttonElement.setAttribute('on', 'tap:divElement.copy()');
+
+    const invocation = trustedInvocation({
+      node: divElement,
+      caller: divElement,
+    });
+    standardActions.handleCopy_(invocation);
+    // win.focus();
+    // divElement.focus();
+
+    let text = '';
+    console./* Review */ log(
+      'unit-test iFrame hasFocus? : ',
+      win.document.hasFocus()
+    );
+    win.navigator.clipboard
+      .readText()
+      .then((res) => {
+        text = res;
+      })
+      .catch((e) => {
+        /**
+         * win.navigator.clipboard.readText() => always fails in uni-test with 'NotAllowedError: Document is not focused.' error.
+         *
+         * This is happening because unit-test is running inside an iFrame which is not focused.
+         * Any workaround?
+         */
+        console./* Review */ error(e);
+      });
+    expect(text).to.equal('Hello World');
+  });
+});
