@@ -1,5 +1,7 @@
 # Bento by Example
 
+> WIP: First draft will be ready by 16-January-2022.
+
 > Detailed writeup of What is AMP & Bento? Benefits of Bento? What is Preact?
 
 1 - hello world - : create, write, test
