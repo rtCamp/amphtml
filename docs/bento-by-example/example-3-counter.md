@@ -102,4 +102,4 @@ export function BentoCounter({...rest}) {
 
 ## Summary
 
-In this example, you walked through how to utilise dynamic function calling using `useCallback`. In [next tutorial](example-4-curreny-converter.md), you will learn about attribute mapping and stylign of the Bento Component.
+In this example, you walked through how to utilise dynamic function calling using `useCallback`. In [next tutorial](example-4-currency-converter.md), you will learn about attribute mapping and stylign of the Bento Component.
