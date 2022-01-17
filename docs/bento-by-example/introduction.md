@@ -29,9 +29,9 @@ Bento Components can only be used as Renderable Components.
 ## Table of Contents
 
 -   [Setting up Environment](./setup.md)
-    -   [CLA Signup](#cla-signup)
-    -   [Clone & Setup Repository](#clone--setup-repository)
-    -   [Visual Studio Code Extensions](#visual-studio-code-extensions)
+    -   [CLA Signup](./setup.md#cla-signup)
+    -   [Clone & Setup Repository](./setup.md#clone--setup-repository)
+    -   [Visual Studio Code Extensions](./setup.md#visual-studio-code-extensions)
 -   [Directory Structure](#directory-structure)
 -   [Bridge between AMP and Bento](#bridge-between-amp-and-bento)
 -   [Execution Flow](#execution-flow)
