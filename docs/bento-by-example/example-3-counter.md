@@ -16,7 +16,7 @@ Refer [reactjs Documentation](https://reactjs.org/docs/hooks-reference.html#usec
 
 Goal of the example is to create a component with two buttons increment, decrement and a lable to show current value of the counter as:
 
-![Currency Converter Demo](img/Example-3-Counter.gif)
+![Counter Demo](img/Example-3-Counter.gif)
 
 Based on above demo, example can be divided into:
 
