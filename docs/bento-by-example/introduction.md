@@ -68,23 +68,29 @@ This example provides step-by-step guide to create your first Bento "Hello World
 
 ![Storybook - Preact - Hello World](img/Storybook-Preact-HelloWorld.png)
 
-[Click here](./example-1-hello-world.md) to explore example documentation.
+| Tutorial | [example-1-hello-world.md](./example-1-hello-world.md)                                                                                        |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Sample   | [rtCamp/amphtml/tree/bento/sample/extensions/amp-hello-world](https://github.com/rtCamp/amphtml/tree/bento/sample/extensions/amp-hello-world) |
 
 #### Example 2: Greetings
 
 Greet user based on their local time.
 
-[Click here](./example-2-greetings.md) to explore example documentation.
-
 ![useEffect Demo](img/Example-2-useEffect.gif)
+
+| Tutorial | [example-2-greetings.md](./example-2-greetings.md)                                                                                      |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Sample   | [rtCamp/amphtml/tree/bento/sample/extensions/amp-greeting](https://github.com/rtCamp/amphtml/tree/bento/sample/extensions/amp-greeting) |
 
 #### Example 3: Counter
 
 > `useState`, `useCallback`, `property` mapping
 
-[Click here](./example-3-counter.md) to explore example documentation.
-
 ![Counter Demo](img/Example-3-Counter.gif)
+
+| Tutorial | [example-3-counter.md](./example-3-counter.md)                                                                                        |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Sample   | [rtCamp/amphtml/tree/bento/sample/extensions/amp-counter](https://github.com/rtCamp/amphtml/tree/bento/sample/extensions/amp-counter) |
 
 #### Assignment 1
 
@@ -100,14 +106,16 @@ Greet user based on their local time.
 
 > Learn `attributes`, `css`, `jss`, `useMemo` for HTTP API call
 
-[Click here](./example-4-currency-converter.md) to explore example documentation.
-
 ![Currency Converter Demo](img/Example-4-CurrencyConverter.gif)
+
+| Tutorial | [example-4-currency-converter.md](./example-4-currency-converter.md)                                                                                        |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Sample   | [rtCamp/amphtml/tree/bento/sample/extensions/amp-currency-converter](https://github.com/rtCamp/amphtml/tree/bento/sample/extensions/amp-currency-converter) |
 
 #### Assignment 2
 
 -   Add `auto-increment` and `initial-value` attribute for `Example 3`
--   Add styling to `Example 3` & `Example 4`
+-   Add appropriate styling to `Example 3` & `Example 4`
 
 ### Advance
 
@@ -121,7 +129,9 @@ Greet user based on their local time.
 >
 > Selecting child using `props`
 
-[Click here](./example-5-carousel.md) to explore example documentation.
+| Tutorial | [example-5-carousel.md](./example-5-carousel.md) |
+| -------- | ------------------------------------------------ |
+| Sample   | WIP                                              |
 
 #### Assignment 3
 
