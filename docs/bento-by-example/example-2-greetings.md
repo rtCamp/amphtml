@@ -140,7 +140,6 @@ export function BentoGreeting({...rest}) {
 
 `greetMessage` is initially set to `Retrieving time...` similar to `useEffect` example, but `useLayoutEffect` runs in synchronous manner and paint/render won't be happen till `useLayoutEffect` finishes it's task. Also, in this example `useLayoutEffect` updates `greetMessage` using `setGreetMessage`, which will be updated in memory DOM. Once `useLayoutEffect` finishes task, updated DOM from the memory will be painted to screen and thus `Retrieving time...` won't be seen even in slowed-down GIF:
 
-`useLayoutEffect`:
 ![useLayoutEffect Demo](img/Example-2-useLayoutEffect.gif)
 
 ## Summary
