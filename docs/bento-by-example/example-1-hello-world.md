@@ -164,7 +164,7 @@ You will see two storybook page:
 
 In this example, you walked through creating and testing first `Hello World` Bento Component. Explore an interactive greetings example in next tutorial.
 
-### Sample Bento Extension:
+### Sample Bento Extension
 
 [rtCamp/amphtml/tree/bento/sample/extensions/amp-hello-world](https://github.com/rtCamp/amphtml/tree/bento/sample/extensions/amp-hello-world)
 

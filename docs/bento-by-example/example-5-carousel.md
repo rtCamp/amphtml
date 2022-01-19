@@ -7,3 +7,7 @@
 -single: true|false
 -clone: true|false
 -as:?? -->
+
+# Example 5: Autoplay-Carousel
+
+[WIP]
