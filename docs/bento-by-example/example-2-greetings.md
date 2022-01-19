@@ -2,9 +2,14 @@
 
 [Example 1](./example-1-hello-world.md) covered basics of Bento Component, how to create and test Bento Component. In this example, you will learn two important hook of Preact: `useEffect` and `useLayoutEffect`.
 
+> Objectives:
+>
+> -   `useEffect`
+> -   `useLayoutEffect`
+
 ![Preact Component](img/Preact%20Functional%20Component.jpg)
 
-As per flowchart, `useEffect` and `useLayoutEffect` will only be executed once DOM is created or updated in memory.
+As per flowchart [WIP: flowchart], `useEffect` and `useLayoutEffect` will only be executed once DOM is created or updated in memory.
 
 **`useEffect`**:
 
@@ -16,7 +21,7 @@ As per flowchart, `useEffect` and `useLayoutEffect` will only be executed once D
 -   Executes **_synchronously_** after DOM is created or updated.
 -   **_Paint will be done only after `useLayoutEffect` finishes execution._**
 
-> It is assumed that you have gone through [Example 1](./example-1-hello-world.md) to how to create a Bento Component.
+> It is assumed that you have gone through [Example 1](./example-1-hello-world.md) to how to create a Bento Component. Use similar steps for this example.
 
 Let's understand difference between `useEffect` and `useLayoutEffect` by Example to greet user based on time:
 
@@ -139,4 +144,7 @@ export function BentoGreeting({...rest}) {
 
 ## Summary
 
-In this example, you walked through usage, working and differences between `useEffect` and `useLayoutEffect`. In [next tutorial](example-3-counter.md), you will learn about `useCallback` with a counter example.
+This example walked through usage, working and differences between `useEffect` and `useLayoutEffect`. In next tutorial, you will learn about `useCallback` with a counter example.
+
+<hr/>
+<a href="example-3-counter.md">Next: Example 3 - Counter</a>
