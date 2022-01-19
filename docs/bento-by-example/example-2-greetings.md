@@ -26,7 +26,7 @@ As per flowchart [WIP: flowchart], `useEffect` and `useLayoutEffect` will only b
 
 Let's understand difference between `useEffect` and `useLayoutEffect` by Example to greet user based on time:
 
-## `useEffect` Greeting Example
+## `useEffect` Greeting Example (`component.js`)
 
 ```javascript
 import * as Preact from '#preact';
@@ -89,7 +89,7 @@ As per example, `greetMessage` is initially set to `Retrieving time...` which ca
 
 ![useEffect Demo](img/Example-2-useEffect.gif)
 
-## `useLayoutEffect` Greeting Example
+## `useLayoutEffect` Greeting Example(`component.js`)
 
 ```javascript
 import * as Preact from '#preact';

@@ -63,7 +63,7 @@ As seen in above figure, a Bento Component is simply a Preact Functional Compone
 
 > Please refer [PreactJs: Functional Components](https://preactjs.com/guide/v10/components#functional-components) for more information.
 
-Let's get back to example. To show `Hello World`, it should be return from Preact Functional Component as:
+Let's get back to example. To show `Hello World`, it should be return from Preact Functional Component as (`component.js`):
 
 ```diff
 import * as Preact from '#preact';
@@ -113,7 +113,7 @@ export function BentoHelloWorld({exampleTagNameProp, ...rest}) {
 }
 ```
 
-Let's remove unnecessary code to make it simple to understand:
+Let's remove unnecessary code to make it simple to understand (`component.js`):
 
 ```javascript
 import * as Preact from '#preact';
