@@ -6,6 +6,7 @@ Setup for development is covered in [previous tutorial](./setup.md). In this exa
 >
 > -   Create new Component
 > -   Write "Hello World"
+>     -   Static Render
 > -   Test Component
 
 ## Create

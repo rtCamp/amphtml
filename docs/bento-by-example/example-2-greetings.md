@@ -6,6 +6,7 @@
 >
 > -   `useEffect`
 > -   `useLayoutEffect`
+> -   `useState`
 
 ![Preact Component](img/Preact%20Functional%20Component.jpg)
 
