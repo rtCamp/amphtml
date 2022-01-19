@@ -306,17 +306,17 @@
     "latestVersion": "0.1"
   },
   {
-    "name": "amp-dailymotion",
-    "version": "0.1",
-    "latestVersion": "0.1"
-  },
-  {
     "name": "amp-currency-converter",
     "version": "1.0",
     "options": {
       "hasCss": true,
       "bento": true
     }
+  },
+  {
+    "name": "amp-dailymotion",
+    "version": "0.1",
+    "latestVersion": "0.1"
   },
   {
     "name": "amp-dailymotion",
