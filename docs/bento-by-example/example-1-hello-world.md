@@ -2,7 +2,7 @@
 
 Setup for development is covered in [previous tutorial](./setup.md). In this example, you will walk through a step-by-step guide to create, write and test your first `Hello World` Bento Component.
 
-> This tutorial is intended for `beginner` and covers:
+> Objectives:
 >
 > -   Create new Component
 > -   Write "Hello World"
@@ -13,8 +13,24 @@ Setup for development is covered in [previous tutorial](./setup.md). In this exa
 Let's create a new Bento Component:
 
 ```shell
-amp make-extension --bento --name=hello-world
+amp make-extension --bento --name=hello-world --nojss --nocss
 ```
+
+Argument explanation:
+
+-   `make-extension`: Create an extension
+-   `--bento`: Instructs `make-extension` to create a Bento extension
+-   `--name`: Give unique name to your extension
+-   `--nojss`: Do not add JSS (required only for styling)
+-   `--nocss`: Do not add JSS (required only for styling)
+
+In context of this example, we do not need styling and thus `--nojss` & `--nocss` are added to the argument list.
+
+> Explore full list of available commands for `make-extension` by
+>
+> ```shell
+> amp make-extension --help
+> ```
 
 ### Understand Directory Structure
 
@@ -145,4 +161,12 @@ You will see two storybook page:
 
 ## Summary
 
-In this example, you walked through creating your first `Hello World` Bento Component. Now, let's create an interactive greetings example in [next tutorial](example-2-greetings.md).
+In this example, you walked through creating and testing first `Hello World` Bento Component. Explore an interactive greetings example in next tutorial.
+
+<hr/>
+<p style="text-align:left;">
+    <a href="setup.md">Previous: Setup</a>
+    <span style="float:right;">
+        <a href="example-2-greetings.md">Next: Example 2 - Greetings</a>
+    </span>
+</p>
