@@ -89,7 +89,7 @@ As per example, `greetMessage` is initially set to `Retrieving time...` which ca
 
 ![useEffect Demo](img/Example-2-useEffect.gif)
 
-## `useLayoutEffect` Greeting Example(`component.js`)
+## `useLayoutEffect` Greeting Example (`component.js`)
 
 ```javascript
 import * as Preact from '#preact';
