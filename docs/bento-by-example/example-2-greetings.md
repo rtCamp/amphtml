@@ -146,5 +146,9 @@ export function BentoGreeting({...rest}) {
 
 This example walked through usage, working and differences between `useEffect` and `useLayoutEffect`. In next tutorial, you will learn about `useCallback` with a counter example.
 
+### Sample Bento Extension:
+
+[rtCamp/amphtml/tree/bento/sample/extensions/amp-greeting](https://github.com/rtCamp/amphtml/tree/bento/sample/extensions/amp-greeting)
+
 <hr/>
 <a href="example-3-counter.md">Next: Example 3 - Counter</a>

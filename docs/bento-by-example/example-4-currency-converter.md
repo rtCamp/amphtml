@@ -101,5 +101,9 @@ Complete sourcecode of `component.js` should look like:
 
 < WIP >
 
+### Sample Bento Extension
+
+[rtCamp/amphtml/tree/bento/sample/extensions/amp-currency-converter](https://github.com/rtCamp/amphtml/tree/bento/sample/extensions/amp-currency-converter)
+
 <hr/>
 <a href="example-5-carousel.md">Next: Example 5 - Carousel</a>

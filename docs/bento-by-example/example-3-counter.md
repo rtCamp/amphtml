@@ -108,5 +108,9 @@ export function BentoCounter({...rest}) {
 
 In this example, you walked through how to utilise dynamic function calling using `useCallback`. In next tutorial, you will learn about attribute-mapping and stylign of the Bento Component.
 
+### Sample Bento Extension
+
+[rtCamp/amphtml/tree/bento/sample/extensions/amp-counter](https://github.com/rtCamp/amphtml/tree/bento/sample/extensions/amp-counter)
+
 <hr/>
 <a href="example-4-currency-converter.md">Next: Example 4 - Currency Converter</a>
