@@ -1,6 +1,10 @@
 # Example 3: Counter
 
-[Example 2](./example-2-greetings.md) covered basics differences between `useEffect` and `useLayoutEffect`. In this example, you will learn dynamically calling a function using `useCallback`.
+[Example 2](./example-2-greetings.md) covered basics differences between `useEffect` and `useLayoutEffect`. In this example, you will learn dynamically calling function using `useCallback`.
+
+> Objectives:
+>
+> -   `useCallback`
 
 ## Syntax
 
@@ -12,7 +16,7 @@ const functionCallback = useCallback(( functionParameters ) => {
 
 `useCallback` will return a memoized version of the callback that only changes if one of the dependencies has changed. This is useful when passing callbacks to optimized child components that rely on reference equality to prevent unnecessary renders.
 
-Refer [reactjs Documentation](https://reactjs.org/docs/hooks-reference.html#usecallback) for more information.
+> Refer [reactjs Documentation](https://reactjs.org/docs/hooks-reference.html#usecallback) for more information.
 
 Goal of the example is to create a component with two buttons increment, decrement and a lable to show current value of the counter as:
 
@@ -55,7 +59,7 @@ Based on above demo, example can be divided into:
     }, [counterValue]);
     ```
 
-Complete sourcecode of `component.js` should look like:
+Combining two of above should look like (`component.js`):
 
 ```jsx
 import * as Preact from '#preact';
@@ -102,4 +106,7 @@ export function BentoCounter({...rest}) {
 
 ## Summary
 
-In this example, you walked through how to utilise dynamic function calling using `useCallback`. In [next tutorial](example-4-currency-converter.md), you will learn about attribute mapping and stylign of the Bento Component.
+In this example, you walked through how to utilise dynamic function calling using `useCallback`. In next tutorial, you will learn about attribute-mapping and stylign of the Bento Component.
+
+<hr/>
+<a href="example-4-currency-converter.md">Next: Example 4 - Currency Converter</a>
