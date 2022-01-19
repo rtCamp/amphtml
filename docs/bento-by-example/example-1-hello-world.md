@@ -164,9 +164,4 @@ You will see two storybook page:
 In this example, you walked through creating and testing first `Hello World` Bento Component. Explore an interactive greetings example in next tutorial.
 
 <hr/>
-<p style="text-align:left;">
-    <a href="setup.md">Previous: Setup</a>
-    <span style="float:right;">
-        <a href="example-2-greetings.md">Next: Example 2 - Greetings</a>
-    </span>
-</p>
+<a href="example-2-greetings.md">Next: Example 2 - Greetings</a>
