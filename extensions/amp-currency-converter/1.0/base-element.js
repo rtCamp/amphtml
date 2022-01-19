@@ -10,8 +10,8 @@ BaseElement['Component'] = BentoCurrencyConverter;
 
 /** @override */
 BaseElement['props'] = {
-  'fromCurrencySymbol': {attr: 'from-currency-symbol'},
-  'toCurrencySymbol': {attr: 'to-currency-symbol'},
+  'fromCurrencySymbol': {attr: 'data-from-currency-symbol'},
+  'toCurrencySymbol': {attr: 'data-to-currency-symbol'},
 };
 
 /** @override */

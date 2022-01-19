@@ -5,7 +5,8 @@ var BentoCurrencyConverterDef = {};
 
 /**
  * @typedef {{
- *   exampleProperty: (string|undefined), (DO NOT SUBMIT)
+ *   fromCurrencySymbol: (string|undefined),
+ *   toCurrencySymbol: (string|undefined)
  * }}
  */
 BentoCurrencyConverterDef.Props;
