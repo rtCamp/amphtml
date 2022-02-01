@@ -1,12 +1,18 @@
+import {devAssertElement} from '#core/assert';
 import {ActionTrust_Enum} from '#core/constants/action-constants';
 import {tryFocus} from '#core/dom';
 import {Layout_Enum, getLayoutClass} from '#core/dom/layout';
 import {computedStyle, toggle} from '#core/dom/style';
 import {isFiniteNumber} from '#core/types';
 import {getWin} from '#core/window';
+import {
+  copyTextToClipboard,
+  isCopyingToClipboardSupported,
+} from '#core/window/clipboard';
 
 import {Services} from '#service';
 
+import {createCustomEvent} from '#utils/event-helper';
 import {dev, user, userAssert} from '#utils/log';
 
 import {getAmpdoc, registerServiceBuilderForDoc} from '../service-helpers';
@@ -98,6 +104,8 @@ export class StandardActions {
       'toggleClass',
       this.handleToggleClass_.bind(this)
     );
+
+    actionService.addGlobalMethodHandler('copy', this.handleCopy_.bind(this));
 
     actionService.addGlobalMethodHandler(
       'toggleChecked',
@@ -192,6 +200,9 @@ export class StandardActions {
         win.print();
         return null;
 
+      case 'copy':
+        return this.handleCopy_(invocation);
+
       case 'optoutOfCid':
         return Services.cidForDoc(this.ampdoc)
           .then((cid) => cid.optOut())
@@ -203,6 +214,74 @@ export class StandardActions {
         return null;
     }
     throw user().createError('Unknown AMP action ', method);
+  }
+
+  /**
+   * Handles the copy to clipboard action
+   * @param {!./action-impl.ActionInvocation} invocation
+   * @return {!null}
+   */
+  handleCopy_(invocation) {
+    /** @enum {string} */
+    const CopyEvents = {
+      COPY_ERROR: 'copy-error',
+      COPY_SUCCESS: 'copy-success',
+    };
+    let eventResult;
+    const {args, node} = invocation;
+    const win = getWin(node);
+
+    let textToCopy;
+    if (invocation.tagOrTarget === 'AMP') {
+      /**
+       * Copy Static Text
+       *  Example: AMP.copy(text='TextToCopy');
+       */
+      textToCopy = args['text'].trim();
+    } else {
+      /**
+       * Copy Target Element Text
+       *  Example: targetId.copy();
+       */
+      const target = devAssertElement(invocation.node);
+      textToCopy = (target.value ?? target.textContent).trim();
+    }
+
+    /**
+     * Trigger Event based on copy action
+     *  - If content got copied to the clipboard successfully, it will
+     *  fire `copy-success` event with data type `success`.
+     *  - If there's any error in copying, it will
+     *  fire `copy-error` event with data type `error`.
+     *  - If browser is not supporting the copy function/action, it
+     *  will fire `copy-error` event with data type `browser`.
+     *
+     *  Example: <button on="tap:AMP.copy(text='Hello AMP');copy-success:copied.show()">Copy</button>
+     */
+    let eventName = CopyEvents.COPY_ERROR;
+    if (isCopyingToClipboardSupported(win.document)) {
+      if (copyTextToClipboard(win, textToCopy)) {
+        eventName = CopyEvents.COPY_SUCCESS;
+        eventResult = 'success';
+      } else {
+        eventResult = 'error';
+      }
+    } else {
+      eventResult = 'browser';
+    }
+    const eventValue = /** @type {!JsonObject} */ ({
+      data: /** @type {!JsonObject} */ {type: eventResult},
+    });
+    const copyEvent = createCustomEvent(win, `${eventName}`, eventValue);
+
+    const action_ = Services.actionServiceForDoc(invocation.caller);
+    action_.trigger(
+      invocation.caller,
+      eventName,
+      copyEvent,
+      ActionTrust_Enum.HIGH
+    );
+    return null;
   }
 
   /**
