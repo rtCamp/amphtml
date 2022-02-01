@@ -149,6 +149,11 @@ amp-ad[sticky='bottom-right'] {
   right: 0;
 }
 
+amp-ad[sticky='sidebar'] {
+  position: sticky;
+  top: 10px;
+}
+
 amp-ad[sticky='left'],
 amp-ad[sticky='right'] {
   background: #fff;
