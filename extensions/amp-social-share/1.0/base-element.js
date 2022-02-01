@@ -1,6 +1,7 @@
 import {PreactBaseElement} from '#preact/base-element';
 
 import {BentoSocialShare} from './component';
+import {CSS as COMPONENT_CSS} from './component.jss';
 
 export class BaseElement extends PreactBaseElement {}
 
@@ -17,7 +18,7 @@ BaseElement['delegatesFocus'] = true;
 BaseElement['props'] = {
   'children': {passthroughNonEmpty: true},
   'height': {attr: 'height'},
-  'tabIndex': {attr: 'tabindex'},
+  'tabindex': {attr: 'tabindex'},
   'type': {attr: 'type'},
   'width': {attr: 'width'},
 };
@@ -30,3 +31,6 @@ BaseElement['staticProps'] = {
 
 /** @override */
 BaseElement['usesShadowDom'] = true;
+
+/** @override */
+BaseElement['shadowCss'] = COMPONENT_CSS;

@@ -1,10 +1,9 @@
-import {Keys} from '#core/constants/key-codes';
-import {dict} from '#core/types/object';
+import {Keys_Enum} from '#core/constants/key-codes';
 import {parseQueryString} from '#core/types/string/url';
 
 import * as Preact from '#preact';
 import {Wrapper} from '#preact/component';
-import {useResourcesNotify} from '#preact/utils';
+import {tabindexFromProps, useResourcesNotify} from '#preact/utils';
 
 import {useStyles} from './component.jss';
 import {getSocialConfig} from './social-share-config';
@@ -31,7 +30,6 @@ export function BentoSocialShare({
   height,
   params,
   style,
-  tabIndex = 0,
   target,
   type,
   width,
@@ -60,7 +58,7 @@ export function BentoSocialShare({
     <Wrapper
       {...rest}
       role="button"
-      tabIndex={tabIndex}
+      tabindex={tabindexFromProps(rest)}
       onKeyDown={(e) => handleKeyPress(e, finalEndpoint, checkedTarget)}
       onClick={() => handleActivation(finalEndpoint, checkedTarget)}
       wrapperStyle={{
@@ -96,10 +94,10 @@ function processChildren(type, children, color, background) {
     return children;
   } else {
     const typeConfig = getSocialConfig(type) || {};
-    const iconStyle = dict({
+    const iconStyle = {
       'color': color || typeConfig.defaultColor,
       'backgroundColor': background || typeConfig.defaultBackgroundColor,
-    });
+    };
     return (
       <BentoSocialShareIcon
         style={{
@@ -141,15 +139,36 @@ function checkProps(type, endpoint, target, width, height, params) {
     return null;
   }
 
+  // TODO: This logic might be duplicated in the AMP component
+  // https://github.com/ampproject/amphtml/issues/36777
+  const currentParams = Object.entries(typeConfig.defaultParams || {}).reduce(
+    (newParams, [key, value]) => {
+      if (newParams[key]) {
+        return newParams;
+      }
+      return {
+        ...newParams,
+        [key]: value
+          .replace('TITLE', document.title)
+          .replace(
+            'CANONICAL_URL',
+            document.querySelector("link[rel='canonical']")?.href ||
+              location.href
+          ),
+      };
+    },
+    params || {}
+  );
+
   // Special case when type is 'email'
   if (type === 'email' && !endpoint) {
-    baseEndpoint = `mailto:${(params && params['recipient']) || ''}`;
+    baseEndpoint = `mailto:${currentParams['recipient'] || ''}`;
   }
 
   // Add params to baseEndpoint
   const finalEndpoint = addParamsToUrl(
     /** @type {string} */ (baseEndpoint),
-    /** @type {!JsonObject} */ (params)
+    /** @type {!JsonObject} */ (currentParams)
   );
 
   // Defaults
@@ -226,11 +245,11 @@ function getQueryString(endpoint) {
  * @return {boolean}
  */
 function isIos() {
-  return /** @type {boolean} */ (
-    window &&
-      window.navigator &&
-      window.navigator.userAgent &&
-      window.navigator.userAgent.search(/iPhone|iPad|iPod/i) >= 0
+  return (
+    /** @type {boolean} */ window &&
+    window.navigator &&
+    window.navigator.userAgent &&
+    window.navigator.userAgent.search(/iPhone|iPad|iPod/i) >= 0
   );
 }
 
@@ -241,7 +260,7 @@ function isIos() {
  */
 function handleKeyPress(event, finalEndpoint, target) {
   const {key} = event;
-  if (key == Keys.SPACE || key == Keys.ENTER) {
+  if (key == Keys_Enum.SPACE || key == Keys_Enum.ENTER) {
     event.preventDefault();
     handleActivation(finalEndpoint, target);
   }
