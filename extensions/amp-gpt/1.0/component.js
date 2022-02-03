@@ -10,7 +10,8 @@ import {
   useState,
 } from '#preact';
 import {forwardRef} from '#preact/compat';
-import {ContainWrapper, useIntersectionObserver} from '#preact/component';
+import {ContainWrapper} from '#preact/component';
+import {useIntersectionObserver} from '#preact/component/intersection-observer';
 import {useMergeRefs} from '#preact/utils';
 
 import {useStyles} from './component.jss';
@@ -29,7 +30,7 @@ const DisplayAs = forwardRef(DisplayAsWithRef);
 
 /**
  * Checks whether given value is string or not.
- * @param value Value to be check
+ * @param {*} value Value to be check
  * @return {boolean} True if value is string type
  */
 function isString(value) {
@@ -49,7 +50,7 @@ export function BentoGptWithRef(
     height,
     optDiv,
     // For multi-size Gpt Ad - Omitted for now
-    size,
+    // size,
     style,
     targeting,
     width,
@@ -75,6 +76,13 @@ export function BentoGptWithRef(
   const fallbackTimerRef = useRef(null);
   const gptAdResponcereceivedRef = useRef(false);
 
+  /** Variables */
+  let globalVariable = global;
+
+  if (globalVariable === undefined) {
+    globalVariable = window;
+  }
+
   const showFallback = useCallback(
     (show) => {
       setErrorOnScriptLoad(show);
@@ -93,20 +101,20 @@ export function BentoGptWithRef(
 
       /**
        * If ad is directly in view, ioCallback will be executed before useEffect`
-       * and thus `global.googletag` will be undefined.
+       * and thus `globalVariable.googletag` will be undefined.
        */
-      if (global.googletag) {
+      if (globalVariable.googletag) {
         /** Register refresh when in View */
-        global.googletag?.pubads().refresh([gptAdSlotRef.current]);
+        globalVariable.googletag?.pubads().refresh([gptAdSlotRef.current]);
       } else {
         /** Register refresh when in View after 250ms */
         setTimeout(() => {
-          global.googletag?.pubads().refresh([gptAdSlotRef.current]);
+          globalVariable.googletag?.pubads().refresh([gptAdSlotRef.current]);
         }, 250);
       }
       inObRef(null);
     },
-    [disableInitialLoad, inObRef]
+    [disableInitialLoad, globalVariable, inObRef]
   );
   const inObRef = useIntersectionObserver(ioCallback);
 
@@ -136,34 +144,34 @@ export function BentoGptWithRef(
    * Display GPT Ad
    */
   const display = useCallback(() => {
-    global.googletag.display(gptAdDivRef.current);
-  }, []);
+    globalVariable.googletag.display(gptAdDivRef.current);
+  }, [globalVariable.googletag]);
 
   /**
    * Refresh GPT Ad
    */
   const refresh = useCallback(() => {
-    global.googletag?.pubads().refresh([gptAdSlotRef.current]);
-  }, []);
+    globalVariable.googletag?.pubads().refresh([gptAdSlotRef.current]);
+  }, [globalVariable.googletag]);
 
   /**
    * Initializes Google GPT Script and Service
    */
   const initialiseGpt = useCallback(() => {
     /** Retrieve Existing or Initializes New GPT Service */
-    global.googletag = global.googletag || {cmd: []};
+    globalVariable.googletag = globalVariable.googletag || {cmd: []};
 
     /** Adds element to the execution queue */
-    global.googletag.cmd.push(function () {
-      global.bentoids.push(optDiv);
+    globalVariable.googletag.cmd.push(function () {
+      globalVariable.bentoids.push(optDiv);
 
       /** Define slot and related parameters */
-      gptAdSlotRef.current = global.googletag
+      gptAdSlotRef.current = globalVariable.googletag
         .defineSlot(adUnitPath, parsedSize, optDiv)
-        .addService(global.googletag.pubads());
+        .addService(globalVariable.googletag.pubads());
 
       /** Disable Initial Load */
-      global.googletag.pubads().disableInitialLoad();
+      globalVariable.googletag.pubads().disableInitialLoad();
 
       /**
        * Note:  We can add multiple slots,
@@ -173,18 +181,20 @@ export function BentoGptWithRef(
       //   .defineSlot('/21730346048/test-skyscraper', [120, 600], 'sample-div2')
       //   .addService(scope.googletag.pubads());
 
-      global.googletag.pubads().addEventListener('slotRequested', function () {
-        setIsLoading(true);
-        fallbackTimerRef.current = setTimeout(() => {
-          if (gptAdResponcereceivedRef.current === true) {
-            return;
-          }
-          setIsLoading(false);
-          showFallback(true);
-        }, 2500);
-      });
+      globalVariable.googletag
+        .pubads()
+        .addEventListener('slotRequested', function () {
+          setIsLoading(true);
+          fallbackTimerRef.current = setTimeout(() => {
+            if (gptAdResponcereceivedRef.current === true) {
+              return;
+            }
+            setIsLoading(false);
+            showFallback(true);
+          }, 2500);
+        });
 
-      global.googletag
+      globalVariable.googletag
         .pubads()
         .addEventListener('slotResponseReceived', function () {
           gptAdResponcereceivedRef.current = true;
@@ -194,7 +204,7 @@ export function BentoGptWithRef(
         });
 
       /** Enable Services */
-      global.googletag.enableServices();
+      globalVariable.googletag.enableServices();
 
       initializeTargets(gptAdSlotRef.current);
 
@@ -204,6 +214,7 @@ export function BentoGptWithRef(
   }, [
     adUnitPath,
     display,
+    globalVariable,
     gptAdSlotRef,
     initializeTargets,
     optDiv,
@@ -223,8 +234,8 @@ export function BentoGptWithRef(
   );
 
   useEffect(() => {
-    global.bentoids = global.bentoids || [];
-    if (global.bentoids.indexOf(optDiv) > -1) {
+    globalVariable.bentoids = globalVariable.bentoids || [];
+    if (globalVariable.bentoids.indexOf(optDiv) > -1) {
       return;
     }
 
@@ -234,19 +245,19 @@ export function BentoGptWithRef(
     }
 
     /**
-     * Load `gpt.js` only once by checking `global.bentogpt` flag.
+     * Load `gpt.js` only once by checking `globalVariable.bentogpt` flag.
      */
-    if (!global.bentogpt) {
-      /** Set `global.bentogpt` so no more further requests are made for `gpt.js` */
-      global.bentogpt = true;
+    if (!globalVariable.bentogpt) {
+      /** Set `globalVariable.bentogpt` so no more further requests are made for `gpt.js` */
+      globalVariable.bentogpt = true;
 
       /** Load GPT Script async once component initialized */
       loadScript(
-        global,
+        globalVariable,
         'https://www.googletagservices.com/tag/js/gpt.js',
         () => {
           /** Script loaded successfully, now Initialize GPT Library for this component */
-          initialiseGpt(global);
+          initialiseGpt(globalVariable);
         },
         () => {
           /** Hide loader */
@@ -258,9 +269,9 @@ export function BentoGptWithRef(
       );
     } else {
       /** `gpt.js` is already loaded, now Initialize GPT Library for this component */
-      initialiseGpt(global);
+      initialiseGpt(globalVariable);
     }
-  }, [disableInitialLoad, initialiseGpt, optDiv, showFallback]);
+  }, [disableInitialLoad, globalVariable, initialiseGpt, optDiv, showFallback]);
 
   return (
     <ContainWrapper

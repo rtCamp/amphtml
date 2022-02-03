@@ -82,7 +82,7 @@ export function BentoModalWithRef(
         class={styles.closeButton}
         onClick={hideModel}
         aria-label="close"
-        tabIndex="0"
+        tabindex="0"
       >
         ✕
       </button>

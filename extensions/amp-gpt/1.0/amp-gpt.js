@@ -1,6 +1,6 @@
-import {dict} from '#core/types/object';
-
 import {isExperimentOn} from '#experiments';
+
+import {AmpPreactBaseElement, setSuperClass} from '#preact/amp-base-element';
 
 import {userAssert} from '#utils/log';
 
@@ -10,11 +10,13 @@ import {CSS} from '../../../build/amp-gpt-1.0.css';
 /** @const {string} */
 const TAG = 'amp-gpt';
 
-class AmpGpt extends BaseElement {
+class AmpGpt extends setSuperClass(BaseElement, AmpPreactBaseElement) {
   /** @override */
   init() {
     this.registerApiAction('display', (api) => api.display());
     this.registerApiAction('refresh', (api) => api.refresh());
+
+    return super.init();
   }
 
   /** @override */

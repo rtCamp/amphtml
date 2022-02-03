@@ -2,6 +2,8 @@ import {userAssert} from '#core/assert';
 
 import {isExperimentOn} from '#experiments';
 
+import {AmpPreactBaseElement, setSuperClass} from '#preact/amp-base-element';
+
 import {BaseElement} from './base-element';
 
 import {CSS} from '../../../build/amp-modal-1.0.css';
@@ -9,7 +11,7 @@ import {CSS} from '../../../build/amp-modal-1.0.css';
 /** @const {string} */
 const TAG = 'amp-modal';
 
-class AmpNcbModel extends BaseElement {
+class AmpNcbModel extends setSuperClass(BaseElement, AmpPreactBaseElement) {
   /** @override */
   init() {
     this.registerApiAction('showModel', (api, invocation) => {
