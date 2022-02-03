@@ -131,6 +131,15 @@
     "latestVersion": "0.1"
   },
   {
+    "name": "amp-adblock-detector",
+    "version": "1.0",
+    "latestVersion": "1.0",
+    "options": {
+      "npm": true,
+      "bento": true
+    }
+  },
+  {
     "name": "amp-addthis",
     "version": "0.1",
     "latestVersion": "0.1",
@@ -489,6 +498,15 @@
     "latestVersion": "0.1"
   },
   {
+    "name": "amp-gpt",
+    "version": "1.0",
+    "latestVersion": "1.0",
+    "options": {
+      "hasCss": true,
+      "bento": true
+    }
+  },
+  {
     "name": "amp-gwd-animation",
     "version": "0.1",
     "latestVersion": "0.1",
@@ -729,6 +747,15 @@
     "name": "amp-minute-media-player",
     "version": "0.1",
     "latestVersion": "0.1"
+  },
+  {
+    "name": "amp-modal",
+    "version": "1.0",
+    "latestVersion": "1.0",
+    "options": {
+      "hasCss": true,
+      "bento": true
+    }
   },
   {
     "name": "amp-mowplayer",

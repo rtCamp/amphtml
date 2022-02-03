@@ -23,9 +23,10 @@ const TOP_STICKY_AD_TRIGGER_THRESHOLD = 200;
  */
 const StickyAdPositions = {
   TOP: 'top',
-  BOTTOM: 'bottom',
   LEFT: 'left',
   RIGHT: 'right',
+  BOTTOM: 'bottom',
+  SIDEBAR: 'sidebar',
   BOTTOM_RIGHT: 'bottom-right',
 };
 
@@ -263,6 +264,69 @@ export class AmpAdUIHandler {
         this.unlisteners_.push(this.topStickyAdScrollListener_);
       }
 
+      // Gutter Ad - Left
+      if (this.stickyAdPosition_ == StickyAdPositions.LEFT) {
+        const userDefinedTop = this.element_.getAttribute('top');
+        const userDefinedLeft = this.element_.getAttribute('left');
+
+        // Let the top sticky ad be below user defined top OR the viewer top.
+        const paddingTop = userDefinedTop
+          ? userDefinedTop
+          : Services.viewportForDoc(this.element_.getAmpDoc()).getPaddingTop();
+
+        // Left padding
+        const paddingLeft = userDefinedLeft ? userDefinedLeft : 20;
+
+        // Set ad padding
+        setStyle(this.element_, 'top', `${paddingTop}px`);
+        setStyle(this.element_, 'left', `${paddingLeft}px`);
+
+        devAssert(
+          this.validSize(
+            this.element_.getAttribute('height'),
+            this.element_.getAttribute('width')
+          ),
+          'amp-ad width is restricted to maximum 300px for style="left"'
+        );
+      }
+
+      // Gutter Ad - Right
+      if (this.stickyAdPosition_ == StickyAdPositions.RIGHT) {
+        const userDefinedTop = this.element_.getAttribute('top');
+        const userDefinedRight = this.element_.getAttribute('right');
+
+        // Let the top sticky ad be below user defined top OR the viewer top.
+        const paddingTop = userDefinedTop
+          ? userDefinedTop
+          : Services.viewportForDoc(this.element_.getAmpDoc()).getPaddingTop();
+
+        // Right padding
+        const paddingRight = userDefinedRight ? userDefinedRight : 20;
+
+        // Set ad padding
+        setStyle(this.element_, 'top', `${paddingTop}px`);
+        setStyle(this.element_, 'right', `${paddingRight}px`);
+
+        devAssert(
+          this.validSize(
+            this.element_.getAttribute('height'),
+            this.element_.getAttribute('width')
+          ),
+          'amp-ad width is restricted to maximum 300px for style="right"'
+        );
+      }
+
+      if (this.stickyAdPosition_ == StickyAdPositions.BOTTOM) {
+        const paddingBar = this.doc_.createElement('amp-ad-sticky-padding');
+        this.element_.insertBefore(
+          paddingBar,
+          devAssert(
+            this.element_.firstChild,
+            'amp-ad should have been expanded.'
+          )
+        );
+      }
+
       this.adjustPadding();
       if (!this.closeButtonRendered_) {
         this.addCloseButton_();
@@ -272,18 +336,40 @@ export class AmpAdUIHandler {
   }
 
   /**
+   * Validates height x weight for vertical ad
+   * @param {number} height
+   * @param {number} width
+   * @return {boolean}
+   */
+  validSize(height, width) {
+    if (width <= 300 && height <= 600) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
    * Scroll promise for sticky ad
    * @return {Promise}
    */
   getScrollPromiseForStickyAd() {
     if (this.isStickyAd()) {
       return new Promise((resolve) => {
-        const unlisten = Services.viewportForDoc(
-          this.element_.getAmpDoc()
-        ).onScroll(() => {
+        if (
+          this.stickyAdPosition_ == StickyAdPositions.LEFT ||
+          this.stickyAdPosition_ == StickyAdPositions.RIGHT
+        ) {
+          // Directly load ad for sticky `left`, `right` and `sidebar`
           resolve();
-          unlisten();
-        });
+        } else {
+          // Wait for scrolling event before loading the ad (for sticky `bottom` and `top`)
+          const unlisten = Services.viewportForDoc(
+            this.element_.getAmpDoc()
+          ).onScroll(() => {
+            resolve();
+            unlisten();
+          });
+        }
       });
     }
     return Promise.resolve(null);
