@@ -35,6 +35,8 @@ describes.realWin(
         return storeService;
       });
 
+      storeService.dispatch(Action.SET_PAGE_SIZE, {width: 1000, height: 1000});
+
       localizationService = new LocalizationService(win.document.body);
       env.sandbox
         .stub(Services, 'localizationServiceForOrNull')
@@ -58,7 +60,7 @@ describes.realWin(
 
     async function shoppingDataDispatchStoreService() {
       const shoppingData = {
-        'sunglasses': {'product-title': 'Spectacular Spectacles'},
+        'sunglasses': {'productTitle': 'Spectacular Spectacles'},
       };
       storeService.dispatch(Action.ADD_SHOPPING_DATA, shoppingData);
     }
@@ -86,10 +88,10 @@ describes.realWin(
 
     it('should set active product in store service when shopping tag is clicked', async () => {
       const tagData = {
-        'product-id': 'sunglasses',
-        'product-title': 'Spectacular Spectacles',
-        'product-price': '400',
-        'product-icon':
+        'productId': 'sunglasses',
+        'productTitle': 'Spectacular Spectacles',
+        'productPrice': '400',
+        'productIcon':
           '/examples/visual-tests/amp-story/img/shopping/nest-audio-icon.png',
       };
 
