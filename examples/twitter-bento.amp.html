@@ -1,0 +1,66 @@
+<!doctype html>
+<html amp>
+	<head>
+		<meta charset="utf-8">
+		<link rel="canonical" href="index.html">
+		<title>bento-twitter intersection observer issue</title>
+		<meta name="viewport" content="width=device-width,minimum-scale=1">
+		<style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+		<script async src="https://cdn.ampproject.org/v0.js"></script>
+    <script async custom-element="amp-twitter" src="https://cdn.ampproject.org/v0/amp-twitter-1.0.js"></script>
+    <script async custom-element="amp-facebook" src="https://cdn.ampproject.org/v0/amp-facebook-1.0.js"></script>
+    <script>
+      (self.AMP = self.AMP || []).push(function (AMP) {
+        AMP.toggleExperiment('bento', true);
+      });
+    </script>
+    <style amp-custom>
+      body { padding: 20px; }
+      amp-facebook {
+        height: 100px;
+      }
+    </style>
+	</head>
+
+	<body>
+    <div id="container"></div>
+    <div style="height: 200vh">
+      <p>
+        <strong>Try scrolling down until you see the Twitter embed. If you scroll slowly, the embed should appear fully expanded.
+        But if you scroll quickly, the Tweet will appear in the non-expanded state and an Expand button will appear.
+        In both cases, the Tweet embed will appear unbuilt when it is first scrolled into view. This indicates the intersection
+        observer needs to be tweaked for lazy-construction of the embed. It should get built when it <em>nears</em>
+        the viewport, not when it is actually in the viewport. </strong>
+      </p>
+    </div>
+
+	<amp-img
+	src="https://amp.dev/static/samples/img/landscape_sea_300x199.jpg"
+	layout="fixed-height"
+	height="400"
+  ></amp-img>
+		<amp-twitter height="100" layout="fixed-height" data-tweetid="885634330868850689">
+      <button overflow>
+        Expand
+      </button>
+    </amp-twitter>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pharetra massa eget dui elementum tempus. Donec ante lacus, feugiat fringilla egestas vel, ultricies vel ex. Phasellus imperdiet ex sed erat condimentum volutpat vitae at ipsum. Donec orci risus, bibendum non lobortis sed, laoreet id enim. Mauris ultricies sapien nec sapien aliquet, bibendum pulvinar risus condimentum. In erat orci, elementum at tincidunt eget, rhoncus a urna. Phasellus ut aliquet lacus. Sed commodo dui vel velit mattis facilisis.</p>
+
+<p>Pellentesque vitae luctus arcu. Ut pharetra, odio ut scelerisque pretium, orci erat laoreet turpis, ut lacinia eros ipsum at mauris. Donec lorem dolor, elementum in lacus ut, laoreet aliquam magna. Maecenas efficitur porttitor neque sit amet malesuada. Nulla id feugiat erat, id ornare tellus. Maecenas pellentesque malesuada nulla eu vehicula. Nunc facilisis euismod enim. Donec aliquam nisi ac dui efficitur, ac consectetur neque eleifend. Proin euismod rutrum condimentum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Aliquam dignissim ante a lectus faucibus efficitur. Cras molestie massa quam, vel sollicitudin urna scelerisque nec. Phasellus ut porta ex, eget ullamcorper lectus. Sed eget euismod velit. Mauris sit amet bibendum orci, varius feugiat ipsum.</p>
+
+<p>Vivamus at placerat quam. Nulla pulvinar sem a urna vehicula finibus. Proin eget pharetra orci. Nam in commodo ex. Aliquam vestibulum tellus augue, nec viverra diam sodales sed. Nullam molestie purus velit, et egestas felis porta ut. Sed vel ante justo. Cras auctor fringilla massa id iaculis. Nullam ac mattis lorem.</p>
+
+<p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Nam ultrices dapibus eros, vitae elementum justo euismod a. Nulla eu lacinia lorem. Nunc mollis justo sed accumsan mollis. Vestibulum tincidunt velit eu risus vehicula, quis fermentum nisl placerat. Maecenas posuere lorem in mi facilisis tristique. Sed fringilla velit sed nunc sollicitudin, id lacinia nulla convallis. Vivamus at ante et dolor ullamcorper mollis vitae non lacus. Integer velit purus, tincidunt a ornare ac, cursus sit amet felis. Mauris id laoreet dui, ac congue ligula. Donec interdum mollis consequat.</p>
+
+<p>Fusce eros nibh, suscipit at justo vitae, fermentum auctor lectus. Morbi id odio arcu. In hac habitasse platea dictumst. Aenean volutpat sed velit ut sodales. Suspendisse potenti. Quisque interdum ligula a urna sagittis, eu placerat mi placerat. Donec at est non neque ultrices euismod. Integer nisi diam, ornare sit amet velit sit amet, pharetra vestibulum diam. Etiam commodo, leo eget blandit facilisis, quam lorem malesuada mauris, id finibus velit eros in tortor. Proin malesuada elementum orci et placerat. Proin rhoncus viverra turpis, eget eleifend purus. Ut congue dolor id blandit sodales. Cras finibus, ex et vestibulum faucibus, est risus fringilla ligula, et hendrerit turpis orci finibus mi.</p>
+
+<p>In est sapien, accumsan vitae pharetra in, bibendum quis eros. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec eget congue est. Phasellus suscipit dignissim turpis, ac molestie lectus lobortis ac. Curabitur aliquam tempor lorem, vitae tincidunt nisl laoreet egestas. Suspendisse risus mi, pulvinar vel auctor quis, lobortis nec tortor. Cras sollicitudin dolor ut mollis dapibus.</p>
+
+<p>Vestibulum sollicitudin rhoncus arcu, in suscipit diam euismod nec. Cras a cursus mauris. Pellentesque volutpat sapien enim, sit amet accumsan nisi tempor eget. Nunc aliquam dapibus tincidunt. Etiam at turpis scelerisque diam pharetra porta. Praesent sit amet sodales tellus, id gravida sapien. Phasellus posuere ante felis, at mattis neque sollicitudin sed. Vestibulum odio ipsum, condimentum vel hendrerit a, feugiat in est. Phasellus luctus, orci non volutpat ullamcorper, nisl lacus ornare metus, a ullamcorper sem quam eu lectus. Duis pellentesque diam id augue auctor, ac ultrices velit vehicula. Proin interdum sodales justo eget efficitur.</p>
+
+<p>Morbi vitae mi quis mauris suscipit elementum quis id ipsum. Donec ac pellentesque tortor. Aenean ac enim tempor, iaculis ex sed, mattis nibh. Nam mollis leo vel elit hendrerit, ultrices sagittis sapien vehicula. Donec blandit, lacus in dictum convallis, tellus nibh sollicitudin tellus, eu sodales magna justo nec est. Etiam arcu felis, pellentesque eget iaculis id, euismod vitae enim. Proin finibus justo at libero dapibus, ac finibus tellus posuere. Nulla ut purus non ante rhoncus semper at a augue. Quisque vitae dolor lobortis, sagittis ipsum non, ultricies dolor. Etiam lacus neque, placerat vel nulla ut, viverra rutrum elit. Etiam faucibus aliquet odio at tincidunt. Nam elementum hendrerit tristique. Aenean imperdiet tellus purus, eget aliquet odio ornare vitae. Fusce condimentum mi ac felis pretium, at interdum libero blandit. Duis et mauris vulputate, gravida nisi vehicula, laoreet quam. Praesent vulputate lectus at venenatis finibus.</p>
+
+<p>Curabitur gravida nunc velit, id hendrerit eros pellentesque eget. Fusce nulla metus, volutpat id vehicula ac, efficitur in augue. Praesent auctor, libero non ultricies semper, risus enim viverra elit, et pulvinar eros ex sit amet metus. Nunc lobortis turpis at mauris efficitur pulvinar. Pellentesque vitae nibh diam. Suspendisse et turpis blandit, luctus ex ac, faucibus neque. Donec auctor urna dui. Morbi volutpat arcu non consequat tempus. Duis pretium dignissim placerat. Morbi sit amet felis urna.</p>
+
+	</body>
+</html>
