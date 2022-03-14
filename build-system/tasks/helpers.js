@@ -14,14 +14,17 @@ const {
 const {cyan, green, red} = require('kleur/colors');
 const {getAmpConfigForFile} = require('./prepend-global');
 const {getEsbuildBabelPlugin} = require('../common/esbuild-babel');
-const {massageSourcemaps} = require('./sourcemaps');
+const {includeSourcesContent, massageSourcemaps} = require('./sourcemaps');
 const {isCiBuild} = require('../common/ci');
 const {jsBundles} = require('../compile/bundles.config');
 const {log, logLocalDev} = require('../common/logging');
 const {thirdPartyFrames} = require('../test-configs/config');
 const {watch} = require('chokidar');
-const {resolvePath} = require('../babel-config/import-resolver');
+const {debug} = require('../compile/debug-compilation-lifecycle');
 const babel = require('@babel/core');
+const {
+  remapDependenciesPlugin,
+} = require('./remap-dependencies-plugin/remap-dependencies');
 
 /**
  * Tasks that should print the `--nobuild` help text.
@@ -328,7 +331,9 @@ async function esbuildCompile(srcDir, srcFilename, destDir, options) {
   const plugins = [babelPlugin];
 
   if (options.remapDependencies) {
-    plugins.unshift(remapDependenciesPlugin());
+    const {externalDependencies: externals, remapDependencies: remaps} =
+      options;
+    plugins.unshift(remapDependenciesPlugin({externals, remaps}));
   }
 
   let result = null;
@@ -343,7 +348,7 @@ async function esbuildCompile(srcDir, srcFilename, destDir, options) {
         entryPoints: [entryPoint],
         bundle: true,
         sourcemap: 'external',
-        sourcesContent: !!argv.full_sourcemaps,
+        sourcesContent: includeSourcesContent(),
         outfile: destFile,
         define: experimentDefines,
         plugins,
@@ -396,6 +401,12 @@ async function esbuildCompile(srcDir, srcFilename, destDir, options) {
       });
       code = result.code;
       mapChain.unshift(result.map);
+      debug(
+        'post-terser',
+        path.join(process.cwd(), destFile),
+        code,
+        result.map
+      );
     }
 
     await Promise.all([
@@ -403,64 +414,13 @@ async function esbuildCompile(srcDir, srcFilename, destDir, options) {
         destFile,
         `${code}\n//# sourceMappingURL=${destFilename}.map`
       ),
-      fs.outputJson(`${destFile}.map`, massageSourcemaps(mapChain, options)),
+      fs.outputJson(
+        `${destFile}.map`,
+        massageSourcemaps(mapChain, destFile, options)
+      ),
     ]);
 
     await finishBundle(destDir, destFilename, options, startTime);
-  }
-
-  /**
-   * Generates a plugin to remap the dependencies of a JS bundle.
-   * @return {Object}
-   */
-  function remapDependenciesPlugin() {
-    const remaps = Object.entries(options.remapDependencies).map(
-      ([path, value]) => ({
-        regex: new RegExp(`^${path}(\.js|\.jsx|\.ts|\.tsx)?$`),
-        value,
-      })
-    );
-    const external = options.externalDependencies;
-    return {
-      name: 'remap-dependencies',
-      setup(build) {
-        build.onResolve({filter: /.*/}, (args) => {
-          const {resolveDir} = args;
-          let {path: importPath} = args;
-
-          // Convert directory imports -> explicit imports of the index file.
-          // Leave js/ts extension out to be lang-agnostic.
-          if (importPath === './') {
-            importPath = './index';
-          }
-
-          let dep;
-          // Use resolvePath() the path to normalize files/directories.
-          // If file, gets filepath; if directory, gets the index filepath
-          if (importPath.startsWith('.')) {
-            const absImportPath = path.posix.join(resolveDir, importPath);
-            const rootDir = process.cwd();
-            const rootRelativePath = path.posix.relative(
-              rootDir,
-              absImportPath
-            );
-            dep = resolvePath(rootRelativePath);
-          } else {
-            dep = importPath;
-          }
-          for (const {regex, value} of remaps) {
-            if (!regex.test(dep)) {
-              continue;
-            }
-            const isExternal = external.includes(value);
-            return {
-              path: isExternal ? value : resolvePath(value),
-              external: isExternal,
-            };
-          }
-        });
-      },
-    };
   }
 
   await build(startTime).catch((err) =>
@@ -719,21 +679,6 @@ async function thirdPartyBootstrap(input, outputName, options) {
 }
 
 /**
- *Creates directory in sync manner
- *
- * @param {string} path
- */
-function mkdirSync(path) {
-  try {
-    fs.mkdirSync(path);
-  } catch (e) {
-    if (e.code != 'EEXIST') {
-      throw e;
-    }
-  }
-}
-
-/**
  * Returns the list of dependencies for a given JS entrypoint by having esbuild
  * generate a metafile for it. Uses the set of babel plugins that would've been
  * used to compile the entrypoint.
@@ -767,7 +712,6 @@ module.exports = {
   maybePrintCoverageMessage,
   maybeToEsmName,
   maybeToNpmEsmName,
-  mkdirSync,
   printConfigHelp,
   printNobuildHelp,
   watchDebounceDelay,
