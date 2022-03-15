@@ -219,69 +219,81 @@ export class StandardActions {
   /**
    * Handles the copy to clipboard action
    * @param {!./action-impl.ActionInvocation} invocation
-   * @return {!null}
    */
   handleCopy_(invocation) {
+    const {args, node} = invocation;
+    const win = getWin(node);
+
     /** @enum {string} */
     const CopyEvents = {
       COPY_ERROR: 'copy-error',
       COPY_SUCCESS: 'copy-success',
     };
-    let eventResult;
-    const {args, node} = invocation;
-    const win = getWin(node);
-
     let textToCopy;
+
     if (invocation.tagOrTarget === 'AMP') {
-      /**
-       * Copy Static Text
-       *  Example: AMP.copy(text='TextToCopy');
-       */
+      //
+      // Copy Static Text
+      //  Example: AMP.copy(text='TextToCopy');
+      //
       textToCopy = args['text'].trim();
     } else {
-      /**
-       * Copy Target Element Text
-       *  Example: targetId.copy();
-       */
+      //
+      // Copy Target Element Text
+      //  Example: targetId.copy();
+      //
       const target = devAssertElement(invocation.node);
       textToCopy = (target.value ?? target.textContent).trim();
     }
 
     /**
-     * Trigger Event based on copy action
-     *  - If content got copied to the clipboard successfully, it will
-     *  fire `copy-success` event with data type `success`.
-     *  - If there's any error in copying, it will
-     *  fire `copy-error` event with data type `error`.
-     *  - If browser is not supporting the copy function/action, it
-     *  will fire `copy-error` event with data type `browser`.
-     *
-     *  Example: <button on="tap:AMP.copy(text='Hello AMP');copy-success:copied.show()">Copy</button>
+     * Raises a status event for copy task result
+     * @param {string} eventName
+     * @param {string} eventResult
+     * @param {!./action-impl.ActionInvocation} invocation
      */
-    let eventName = CopyEvents.COPY_ERROR;
-    if (isCopyingToClipboardSupported(win.document)) {
-      if (copyTextToClipboard(win, textToCopy)) {
-        eventName = CopyEvents.COPY_SUCCESS;
-        eventResult = 'success';
-      } else {
-        eventResult = 'error';
-      }
-    } else {
-      eventResult = 'browser';
-    }
-    const eventValue = /** @type {!JsonObject} */ ({
-      data: /** @type {!JsonObject} */ {type: eventResult},
-    });
-    const copyEvent = createCustomEvent(win, `${eventName}`, eventValue);
+    const triggerEvent = function (eventName, eventResult, invocation) {
+      const eventValue = /** @type {!JsonObject} */ ({
+        data: /** @type {!JsonObject} */ {type: eventResult},
+      });
+      const copyEvent = createCustomEvent(win, `${eventName}`, eventValue);
 
-    const action_ = Services.actionServiceForDoc(invocation.caller);
-    action_.trigger(
-      invocation.caller,
-      eventName,
-      copyEvent,
-      ActionTrust_Enum.HIGH
-    );
-    return null;
+      const action_ = Services.actionServiceForDoc(invocation.caller);
+      action_.trigger(
+        invocation.caller,
+        eventName,
+        copyEvent,
+        ActionTrust_Enum.HIGH
+      );
+    };
+
+    //
+    // Trigger Event based on copy action
+    //  - If content got copied to the clipboard successfully, it will
+    //    fire `copy-success` event with data type `success`.
+    //  - If there's any error in copying, it will
+    //    fire `copy-error` event with data type `error`.
+    //  - If browser is not supporting the copy function/action, it
+    //    will fire `copy-error` event with data type `browser`.
+    //
+    //  Example: <button on="tap:AMP.copy(text='Hello AMP');copy-success:copied.show()">Copy</button>
+    //
+    if (isCopyingToClipboardSupported(win.document)) {
+      copyTextToClipboard(
+        win,
+        textToCopy,
+        () => {
+          triggerEvent(CopyEvents.COPY_SUCCESS, 'success', invocation);
+        },
+        () => {
+          // Error encountered while copying.
+          triggerEvent(CopyEvents.COPY_ERROR, 'error', invocation);
+        }
+      );
+    } else {
+      // Copy is disabled or not supported by user.
+      triggerEvent(CopyEvents.COPY_ERROR, 'unsupported', invocation);
+    }
   }
 
   /**

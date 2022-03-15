@@ -5,7 +5,7 @@ import {setStyle, setStyles} from '#core/dom/style';
 import {Services} from '#service';
 
 import {listen} from '#utils/event-helper';
-import {user, userAssert} from '#utils/log';
+import {devAssert, user, userAssert} from '#utils/log';
 
 import {getAdContainer} from '../../../src/ad-helper';
 
@@ -14,8 +14,7 @@ const TAG = 'amp-ad-ui';
 const STICKY_AD_MAX_SIZE_LIMIT = 0.2;
 const STICKY_AD_MAX_HEIGHT_LIMIT = 0.5;
 
-const TOP_STICKY_AD_CLOSE_THRESHOLD = 50;
-const TOP_STICKY_AD_TRIGGER_THRESHOLD = 200;
+const TOP_STICKY_AD_OFFSET_THRESHOLD = 50;
 
 /**
  * Permissible sticky ad options.
@@ -84,13 +83,6 @@ export class AmpAdUIHandler {
      * @private {!Function}
      */
     this.topStickyAdScrollListener_ = undefined;
-
-    /**
-     * For top sticky ads, we waited until scrolling down before activating
-     * the closing ads listener.
-     * @private {boolean}
-     */
-    this.topStickyAdCloserAcitve_ = false;
 
     /**
      * Unlisteners to be unsubscribed after destroying.
@@ -234,31 +226,21 @@ export class AmpAdUIHandler {
    */
   maybeInitStickyAd() {
     if (this.isStickyAd()) {
+      const doc = this.element_.getAmpDoc();
       setStyle(this.element_, 'visibility', 'visible');
 
       if (this.stickyAdPosition_ == StickyAdPositions.TOP) {
-        const doc = this.element_.getAmpDoc();
-
-        // Let the top sticky ad be below the viewer top.
-        const paddingTop = Services.viewportForDoc(doc).getPaddingTop();
-        setStyle(this.element_, 'top', `${paddingTop}px`);
-
         this.topStickyAdScrollListener_ = Services.viewportForDoc(doc).onScroll(
           () => {
-            const scrollPos = doc.win./*OK*/ scrollY;
-            if (scrollPos > TOP_STICKY_AD_TRIGGER_THRESHOLD) {
-              this.topStickyAdCloserAcitve_ = true;
-            }
-
-            // When the scroll position is close to the top, we close the
+            // When the scroll position is close to the top, we hide the
             // top sticky ad in order not to have the ads overlap the
             // content.
-            if (
-              this.topStickyAdCloserAcitve_ &&
-              scrollPos < TOP_STICKY_AD_CLOSE_THRESHOLD
-            ) {
-              this.closeStickyAd_();
-            }
+            const scrollPos = doc.win./*OK*/ scrollY;
+            setStyle(
+              this.element_,
+              'visibility',
+              scrollPos > TOP_STICKY_AD_OFFSET_THRESHOLD ? 'visible' : 'hidden'
+            );
           }
         );
         this.unlisteners_.push(this.topStickyAdScrollListener_);
@@ -326,6 +308,10 @@ export class AmpAdUIHandler {
           )
         );
       }
+      Services.viewportForDoc(doc).addToFixedLayer(
+        this.element_,
+        /* forceTransfer */ true
+      );
 
       this.adjustPadding();
       if (!this.closeButtonRendered_) {
