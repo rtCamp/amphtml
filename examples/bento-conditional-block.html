@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>bento-conditional-block</title>
+    <script src="https://cdn.ampproject.org/bento.js"></script>
+    <script
+      async
+      src="http://localhost:8000/dist/v0/bento-conditional-block-1.0.max.js"
+    ></script>
+    <script id="conditional-block" type="application/json">
+      {
+        "top_level": {
+          "default_operation": {
+            "type": "GET",
+            "url": "http://localhost:3000/subscribers/1",
+            "options": {
+              "method": "GET"
+            },
+            "parameters": "0280"
+          }
+        },
+        "hasDonated": {
+          "default_operation": {
+            "type": "variable",
+            "operation": "hasDonated = false"
+          },
+          "condition": "hasDonated",
+          "true_operation": null,
+          "false_operation": {
+            "type": "GET",
+            "url": "http://localhost:3000/subscribers/1",
+            "options": {
+              "method": "GET"
+            },
+            "parameters": {
+              "cid": "0280"
+            }
+          },
+          "expiration": "weekly"
+        },
+        "visitCount": {
+          "default_operation": {
+            "type": "variable",
+            "operation": "visitCount = 5"
+          },
+          "condition": "visitCount < 10",
+          "true_operation": {
+            "type": "variable",
+            "operation": "visitCount = visitCount + 1"
+          },
+          "false_operation": null,
+          "expiration": "daily"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <bento-conditional-block></bento-conditional-block>
+    <section conditional-block="hasDonated" hidden>
+      Visible when 'hasDonated' is `true`
+    </section>
+    <section conditional-block="NOT hasDonated" hidden>
+      Visible when 'hasDonated' is `false`
+    </section>
+    <section conditional-block="visitCount < 10" hidden>
+      Visible when 'visitCount < 10'
+    </section>
+  </body>
+</html>
