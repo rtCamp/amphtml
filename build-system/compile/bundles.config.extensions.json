@@ -505,6 +505,10 @@
     "latestVersion": "0.1"
   },
   {
+    "name": "amp-google-read-aloud-player",
+    "version": "0.1"
+  },
+  {
     "name": "amp-gpt",
     "version": "1.0",
     "latestVersion": "1.0",
@@ -512,10 +516,6 @@
       "hasCss": true,
       "bento": true
     }
-  },
-  {
-    "name": "amp-google-read-aloud-player",
-    "version": "0.1"
   },
   {
     "name": "amp-gwd-animation",
