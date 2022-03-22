@@ -5,29 +5,31 @@
 %lex
 %%
 
-\s+                       /* skip whitespace */
-[0-9]+("."[0-9]+)?\b      return 'NUMBER'
-"*"                       return '*'
-"/"                       return '/'
-"-"                       return '-'
-"+"                       return '+'
-"^"                       return '^'
-"!"                       return '!'
-"%"                       return '%'
-"("                       return '('
-")"                       return ')'
-"PI"                      return 'PI'
-"E"                       return 'E'
-[a-zA-Z_][a-zA-Z0-9_]*    return 'NAME'
-\'[^\']*\'                return 'STRING'
-\"[^\"]*\"                return 'STRING'
-"TRUE"                    return 'TRUE'
-"true"                    return 'TRUE'
-"FALSE"                   return 'FALSE'
-"false"                   return 'FALSE'
-"NULL"                    return 'NULL'
-<<EOF>>                   return 'EOF'
-.                         return 'INVALID'
+\s+                                         /* skip whitespace */
+[0-9]+("."[0-9]+)?\b                        return 'NUMBER'
+"*"                                         return '*'
+"/"                                         return '/'
+"-"                                         return '-'
+"+"                                         return '+'
+"^"                                         return '^'
+"!"                                         return '!'
+"%"                                         return '%'
+"("                                         return '('
+")"                                         return ')'
+"PI"                                        return 'PI'
+"E"                                         return 'E'
+"$COOKIE['"[a-zA-Z_][a-zA-Z0-9_]*"']"       return 'VAL_COOKIE'
+"$LOCALSTORAGE['"[a-zA-Z_][a-zA-Z0-9_]*"']" return 'VAL_LOCALSTORAGE'
+[a-zA-Z_][a-zA-Z0-9_]*                      return 'NAME'
+\'[^\']*\'                                  return 'STRING'
+\"[^\"]*\"                                  return 'STRING'
+"TRUE"                                      return 'TRUE'
+"true"                                      return 'TRUE'
+"FALSE"                                     return 'FALSE'
+"false"                                     return 'FALSE'
+"NULL"                                      return 'NULL'
+<<EOF>>                                     return 'EOF'
+.                                           return 'INVALID'
 
 /lex
 
@@ -71,6 +73,35 @@ e
         {$$ = -$2;}
     | '(' e ')'
         {$$ = $2;}
+    | VAL_COOKIE
+        {
+            const cookieKey = yytext.replace("$COOKIE['","").replace("']","");
+            var cookieValue = null;
+
+            // Split cookie string and get all individual name=value pairs in an array
+            var cookieArr = document.cookie.split(";");
+                
+            // Loop through the array elements
+            for(var i = 0; i < cookieArr.length; i++) {
+                var cookiePair = cookieArr[i].split("=");
+                
+                // Removing whitespace at the beginning of the cookie name
+                // and compare it with the given string
+                if(cookieKey == cookiePair[0].trim()) {
+                    // Decode the cookie value and return
+                    cookieValue = decodeURIComponent(cookiePair[1]);
+                    break;
+                }
+            }
+
+            $$ = cookieValue;
+        }
+    | VAL_LOCALSTORAGE
+        {
+            const variableKey = yytext.replace("$LOCALSTORAGE['","").replace("']","");
+            var keyValue = localStorage.getItem(variableKey);
+            $$ = keyValue;
+        }
     | NUMBER
         {$$ = Number(yytext);}
     | NAME
