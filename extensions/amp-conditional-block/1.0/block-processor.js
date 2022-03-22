@@ -142,7 +142,7 @@ export class BlockProcessor {
    */
   processDynamicOperation(jsonData, callback) {
     if (jsonData === null) {
-      callback();
+      callback(null);
       return;
     }
 
@@ -159,7 +159,7 @@ export class BlockProcessor {
             );
             localStorage.setItem(variable, res[variable]);
           });
-          callback();
+          callback(res);
         });
         break;
       case 'POST':
@@ -173,7 +173,7 @@ export class BlockProcessor {
             );
             localStorage.setItem(variable, res[variable]);
           });
-          callback();
+          callback(res);
         });
         break;
       case 'VARIABLE':
@@ -239,7 +239,7 @@ export class BlockProcessor {
         if (localStorage.getItem(variable) === null) {
           scope.processDynamicOperation(
             scope.configuration[variable].default_operation,
-            () => {
+            (opt_res) => {
               currPos += 1;
               logger.info('COUNTER: ', currPos, configLen);
               if (currPos == configLen) {
@@ -253,7 +253,7 @@ export class BlockProcessor {
           // True Operation Block
           scope.processDynamicOperation(
             scope.configuration[variable].true_operation,
-            () => {
+            (opt_res) => {
               currPos += 1;
               logger.info('COUNTER: ', currPos, configLen);
               if (currPos == configLen) {
@@ -265,7 +265,7 @@ export class BlockProcessor {
           // False Operation Block
           scope.processDynamicOperation(
             scope.configuration[variable].false_operation,
-            () => {
+            (opt_res) => {
               currPos += 1;
               logger.info('COUNTER: ', currPos, configLen);
               if (currPos == configLen) {
