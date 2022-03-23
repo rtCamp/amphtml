@@ -84,12 +84,15 @@ e
             // Loop through the array elements
             for(var i = 0; i < cookieArr.length; i++) {
                 var cookiePair = cookieArr[i].split("=");
+
+                // Workaround for cookie value like: var1 = X=10:Y=200:Z=-1
+                var tempValue = cookieArr[i].substring(cookieArr[i].indexOf("=") + 1);//.split("=");
                 
                 // Removing whitespace at the beginning of the cookie name
                 // and compare it with the given string
                 if(cookieKey == cookiePair[0].trim()) {
                     // Decode the cookie value and return
-                    cookieValue = decodeURIComponent(cookiePair[1]);
+                    cookieValue = decodeURIComponent(tempValue);
                     break;
                 }
             }

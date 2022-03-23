@@ -111,6 +111,16 @@ export class BlockProcessor {
   }
 
   /**
+   * Search through expr for `COOKIE` or `localStorage`, and retrieve respected value
+   * @param {string} expr Expression to be parsed
+   * @return {string|null} Returns retrieved value from client if available else null
+   */
+  processParameterValue(expr) {
+    const result = this.accessExpProcessor.evaluate(expr, {});
+    return result;
+  }
+
+  /**
    * Handles fetch request
    * @param {string} method
    * @param {!JsonObject} jsonData
@@ -119,8 +129,28 @@ export class BlockProcessor {
    */
   handleFetchRequest(method, jsonData, callback) {
     if ('GET' === method) {
+      const scope = this;
+      // Traverse through all parameters
+      Object.keys(jsonData.parameters).forEach(function (variable) {
+        // Retrieve parameter value from client
+        const result = scope.processParameterValue(
+          jsonData.parameters[variable]
+        );
+        // Update parameter value
+        jsonData.parameters[variable] = result;
+      });
       jsonData.url += '?' + new URLSearchParams(jsonData.parameters).toString();
     } else {
+      const scope = this;
+      // Traverse through all parameters
+      Object.keys(jsonData.parameters).forEach(function (variable) {
+        // Retrieve parameter value from client
+        const result = scope.processParameterValue(
+          jsonData.parameters[variable]
+        );
+        // Update parameter value
+        jsonData.parameters[variable] = result;
+      });
       jsonData.options.body = JSON.stringify(jsonData.parameters);
     }
 
