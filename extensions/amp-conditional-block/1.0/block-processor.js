@@ -1,5 +1,3 @@
-import {logger} from '#preact/logger';
-
 import {AmpAccessEvaluator} from './access-expr';
 import {AccessExpressionProcessor} from './calculator-expr';
 
@@ -11,7 +9,7 @@ import {AccessExpressionProcessor} from './calculator-expr';
 export class BlockProcessor {
   /**
    * @param {!JsonObject} configuration
-   * @param readyCallback
+   * @param {function()} readyCallback
    */
   constructor(configuration, readyCallback) {
     /** @type {!JsonObject} */
@@ -39,10 +37,7 @@ export class BlockProcessor {
 
     // TODO(@AnuragVasanwala): Replace `for-each` loop with `for-in` loop for better performance
     Object.keys(this.configuration).forEach(function (variable) {
-      // logger.info(variable);
-
       if (variable !== 'top_level' && localStorage.getItem(variable) === null) {
-        // logger.error(variable, 'does not exists');
         result = false;
         return false;
       }
@@ -124,7 +119,7 @@ export class BlockProcessor {
    * Handles fetch request
    * @param {string} method
    * @param {!JsonObject} jsonData
-   * @param callback
+   * @param {function()} callback
    * @return {string}
    */
   handleFetchRequest(method, jsonData, callback) {
@@ -167,7 +162,7 @@ export class BlockProcessor {
   /**
    * Processes dynamic operation
    * @param {!JsonObject} jsonData
-   * @param callback
+   * @param {function()} callback
    * @return {*}
    */
   processDynamicOperation(jsonData, callback) {
@@ -181,12 +176,6 @@ export class BlockProcessor {
         // TODO (@AnuragVasanwala): Add support to re-compute parameters
         this.handleFetchRequest('GET', jsonData, (res) => {
           Object.keys(res).forEach(function (variable) {
-            logger.error(
-              'GET : localStorage[',
-              variable,
-              '] = ',
-              res[variable]
-            );
             localStorage.setItem(variable, res[variable]);
           });
           callback(res);
@@ -195,12 +184,6 @@ export class BlockProcessor {
       case 'POST':
         return this.handleFetchRequest('POST', jsonData, (res) => {
           Object.keys(res).forEach(function (variable) {
-            logger.error(
-              'POST : localStorage[',
-              variable,
-              '] = ',
-              res[variable]
-            );
             localStorage.setItem(variable, res[variable]);
           });
           callback(res);
@@ -210,12 +193,6 @@ export class BlockProcessor {
         // Array Index: [0] = <variableName> | [1] = '=' | [2] = <operation>
         const opData = jsonData.operation.split('=');
         const result = this.compute(opData[1].trim());
-        logger.error(
-          'DYNAMIC : localStorage[',
-          opData[0].trim(),
-          '] = ',
-          result
-        );
         localStorage.setItem(opData[0].trim(), result);
         callback(result);
         break;
@@ -240,19 +217,11 @@ export class BlockProcessor {
       scope.processDynamicOperation(
         scope.configuration.top_level.default_operation,
         (res) => {
-          // logger.info(res);
           Object.keys(res).forEach(function (variable) {
-            logger.error(
-              'DEF : localStorage[',
-              variable,
-              '] = ',
-              res[variable]
-            );
             localStorage.setItem(variable, res[variable]);
           });
 
           currPos += 1;
-          logger.info('COUNTER: ', currPos, configLen);
           if (currPos == configLen) {
             scope.readyCallback(this);
           }
@@ -271,7 +240,6 @@ export class BlockProcessor {
             scope.configuration[variable].default_operation,
             (opt_res) => {
               currPos += 1;
-              logger.info('COUNTER: ', currPos, configLen);
               if (currPos == configLen) {
                 scope.readyCallback(scope);
               }
@@ -285,7 +253,7 @@ export class BlockProcessor {
             scope.configuration[variable].true_operation,
             (opt_res) => {
               currPos += 1;
-              logger.info('COUNTER: ', currPos, configLen);
+
               if (currPos == configLen) {
                 scope.readyCallback(scope);
               }
@@ -297,7 +265,7 @@ export class BlockProcessor {
             scope.configuration[variable].false_operation,
             (opt_res) => {
               currPos += 1;
-              logger.info('COUNTER: ', currPos, configLen);
+
               if (currPos == configLen) {
                 scope.readyCallback(scope);
               }

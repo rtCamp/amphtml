@@ -2,7 +2,6 @@ import * as Preact from '#preact';
 import {useCallback, useEffect} from '#preact';
 import {forwardRef} from '#preact/compat';
 import {ContainWrapper} from '#preact/component';
-import {logger} from '#preact/logger';
 
 import {BlockProcessor} from './block-processor';
 
@@ -18,7 +17,6 @@ export function BentoConditionalBlockWithRef({children, ...rest}, ref) {
   const queryAllSelectors = useCallback((doc) => {
     const docRef = doc || document;
     const accessElements = docRef.querySelectorAll('[conditional-block]');
-    logger.info('Elements with [conditional-block]: ', accessElements);
     return accessElements;
   }, []);
 
@@ -31,7 +29,6 @@ export function BentoConditionalBlockWithRef({children, ...rest}, ref) {
     const parsedData = JSON.parse(
       configurationScript.childNodes[0].textContent
     );
-    logger.info('Parsed Configuration Script: ', parsedData);
     return parsedData;
   }, []);
 
@@ -43,12 +40,8 @@ export function BentoConditionalBlockWithRef({children, ...rest}, ref) {
 
     if (processor_.evaluate(expression)) {
       selector.removeAttribute('hidden');
-      logger.info('Expression: ', expression, ' | SHOW');
-      logger.info('on: ', selector);
     } else {
       selector.setAttribute('hidden', '');
-      logger.warn('Expression: ', expression, ' | HIDE');
-      logger.warn('on: ', selector);
     }
   }, []);
 
@@ -65,7 +58,6 @@ export function BentoConditionalBlockWithRef({children, ...rest}, ref) {
       //                          when localStorage is empty -> it loads defaultOperation
       setTimeout(() => {
         accessElements.forEach((selector) => {
-          logger.info('Processing', selector);
           compute(exprProcessor, selector);
         });
       }, 500);
