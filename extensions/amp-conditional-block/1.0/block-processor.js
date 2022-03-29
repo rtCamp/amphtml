@@ -1,5 +1,3 @@
-import {logger} from '#preact/logger';
-
 import {AmpAccessEvaluator} from './access-expr';
 import {AccessExpressionProcessor} from './calculator-expr';
 
@@ -11,7 +9,7 @@ import {AccessExpressionProcessor} from './calculator-expr';
 export class BlockProcessor {
   /**
    * @param {!JsonObject} configuration
-   * @param readyCallback
+   * @param {function()} readyCallback
    */
   constructor(configuration, readyCallback) {
     /** @type {!JsonObject} */
@@ -39,10 +37,7 @@ export class BlockProcessor {
 
     // TODO(@AnuragVasanwala): Replace `for-each` loop with `for-in` loop for better performance
     Object.keys(this.configuration).forEach(function (variable) {
-      // logger.info(variable);
-
       if (variable !== 'top_level' && localStorage.getItem(variable) === null) {
-        // logger.error(variable, 'does not exists');
         result = false;
         return false;
       }
@@ -111,16 +106,46 @@ export class BlockProcessor {
   }
 
   /**
+   * Search through expr for `COOKIE` or `localStorage`, and retrieve respected value
+   * @param {string} expr Expression to be parsed
+   * @return {string|null} Returns retrieved value from client if available else null
+   */
+  processParameterValue(expr) {
+    const result = this.accessExpProcessor.evaluate(expr, {});
+    return result;
+  }
+
+  /**
    * Handles fetch request
    * @param {string} method
    * @param {!JsonObject} jsonData
-   * @param callback
+   * @param {function()} callback
    * @return {string}
    */
   handleFetchRequest(method, jsonData, callback) {
     if ('GET' === method) {
+      const scope = this;
+      // Traverse through all parameters
+      Object.keys(jsonData.parameters).forEach(function (variable) {
+        // Retrieve parameter value from client
+        const result = scope.processParameterValue(
+          jsonData.parameters[variable]
+        );
+        // Update parameter value
+        jsonData.parameters[variable] = result;
+      });
       jsonData.url += '?' + new URLSearchParams(jsonData.parameters).toString();
     } else {
+      const scope = this;
+      // Traverse through all parameters
+      Object.keys(jsonData.parameters).forEach(function (variable) {
+        // Retrieve parameter value from client
+        const result = scope.processParameterValue(
+          jsonData.parameters[variable]
+        );
+        // Update parameter value
+        jsonData.parameters[variable] = result;
+      });
       jsonData.options.body = JSON.stringify(jsonData.parameters);
     }
 
@@ -137,12 +162,12 @@ export class BlockProcessor {
   /**
    * Processes dynamic operation
    * @param {!JsonObject} jsonData
-   * @param callback
+   * @param {function()} callback
    * @return {*}
    */
   processDynamicOperation(jsonData, callback) {
     if (jsonData === null) {
-      callback();
+      callback(null);
       return;
     }
 
@@ -151,41 +176,23 @@ export class BlockProcessor {
         // TODO (@AnuragVasanwala): Add support to re-compute parameters
         this.handleFetchRequest('GET', jsonData, (res) => {
           Object.keys(res).forEach(function (variable) {
-            logger.error(
-              'GET : localStorage[',
-              variable,
-              '] = ',
-              res[variable]
-            );
             localStorage.setItem(variable, res[variable]);
           });
-          callback();
+          callback(res);
         });
         break;
       case 'POST':
         return this.handleFetchRequest('POST', jsonData, (res) => {
           Object.keys(res).forEach(function (variable) {
-            logger.error(
-              'POST : localStorage[',
-              variable,
-              '] = ',
-              res[variable]
-            );
             localStorage.setItem(variable, res[variable]);
           });
-          callback();
+          callback(res);
         });
         break;
       case 'VARIABLE':
         // Array Index: [0] = <variableName> | [1] = '=' | [2] = <operation>
         const opData = jsonData.operation.split('=');
         const result = this.compute(opData[1].trim());
-        logger.error(
-          'DYNAMIC : localStorage[',
-          opData[0].trim(),
-          '] = ',
-          result
-        );
         localStorage.setItem(opData[0].trim(), result);
         callback(result);
         break;
@@ -210,19 +217,11 @@ export class BlockProcessor {
       scope.processDynamicOperation(
         scope.configuration.top_level.default_operation,
         (res) => {
-          // logger.info(res);
           Object.keys(res).forEach(function (variable) {
-            logger.error(
-              'DEF : localStorage[',
-              variable,
-              '] = ',
-              res[variable]
-            );
             localStorage.setItem(variable, res[variable]);
           });
 
           currPos += 1;
-          logger.info('COUNTER: ', currPos, configLen);
           if (currPos == configLen) {
             scope.readyCallback(this);
           }
@@ -239,9 +238,8 @@ export class BlockProcessor {
         if (localStorage.getItem(variable) === null) {
           scope.processDynamicOperation(
             scope.configuration[variable].default_operation,
-            () => {
+            (opt_res) => {
               currPos += 1;
-              logger.info('COUNTER: ', currPos, configLen);
               if (currPos == configLen) {
                 scope.readyCallback(scope);
               }
@@ -253,9 +251,9 @@ export class BlockProcessor {
           // True Operation Block
           scope.processDynamicOperation(
             scope.configuration[variable].true_operation,
-            () => {
+            (opt_res) => {
               currPos += 1;
-              logger.info('COUNTER: ', currPos, configLen);
+
               if (currPos == configLen) {
                 scope.readyCallback(scope);
               }
@@ -265,9 +263,9 @@ export class BlockProcessor {
           // False Operation Block
           scope.processDynamicOperation(
             scope.configuration[variable].false_operation,
-            () => {
+            (opt_res) => {
               currPos += 1;
-              logger.info('COUNTER: ', currPos, configLen);
+
               if (currPos == configLen) {
                 scope.readyCallback(scope);
               }
