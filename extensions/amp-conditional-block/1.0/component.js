@@ -1,3 +1,5 @@
+import {setStyle} from '#core/dom/style';
+
 import * as Preact from '#preact';
 import {useCallback, useEffect} from '#preact';
 import {forwardRef} from '#preact/compat';
@@ -40,8 +42,10 @@ export function BentoConditionalBlockWithRef({children, ...rest}, ref) {
 
     if (processor_.evaluate(expression)) {
       selector.removeAttribute('hidden');
+      setStyle(selector, 'display', 'flex');
     } else {
       selector.setAttribute('hidden', '');
+      setStyle(selector, 'display', 'none');
     }
   }, []);
 
