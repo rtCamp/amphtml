@@ -99,6 +99,7 @@ export class BlockProcessor {
           localStorageResult[variable] === 'true' ? true : false;
       }
     });
+
     const result = this.accessEvaluator.evaluate(expr, localStorageResult);
     return result;
   }
