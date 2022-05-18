@@ -1,6 +1,8 @@
-import * as Preact from '#preact';
-import {BentoConditionalBlock} from '../component';
 import {mount} from 'enzyme';
+
+import * as Preact from '#preact';
+
+import {BentoConditionalBlock} from '../component';
 
 describes.sandboxed(
   'BentoConditionalBlock preact component v1.0',

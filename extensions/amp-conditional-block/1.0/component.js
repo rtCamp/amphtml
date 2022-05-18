@@ -39,7 +39,6 @@ export function BentoConditionalBlockWithRef({children, ...rest}, ref) {
    */
   const compute = useCallback((processor_, selector) => {
     const expression = selector.attributes['conditional-block'].value;
-
     if (processor_.evaluate(expression)) {
       selector.removeAttribute('hidden');
       setStyle(selector, 'display', 'flex');
@@ -64,7 +63,7 @@ export function BentoConditionalBlockWithRef({children, ...rest}, ref) {
         accessElements.forEach((selector) => {
           compute(exprProcessor, selector);
         });
-      }, 500);
+      }, 700);
     });
   }, [children, ref, getJsonConfig, compute, queryAllSelectors]);
   return <ContainWrapper layout size paint {...rest}></ContainWrapper>;
