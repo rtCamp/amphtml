@@ -302,13 +302,13 @@ export class BlockProcessor {
         return -1; // Never expire
         break;
       case 'daily':
-        return Date.now() + 15000; // Expires daily
+        return Date.now() + 86400000; // Expires daily
         break;
       case 'weekly':
-        return Date.now() + 20000; // Expires weekly
+        return Date.now() + 604800000; // Expires weekly (every 7 days)
         break;
       case 'monthly':
-        return Date.now() + 25000; // Expires monthly
+        return Date.now() + 2592000000; // Expires monthly (every 30 days)
         break;
       case 'always':
         return 0; // Always expires
