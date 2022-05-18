@@ -1,5 +1,6 @@
 import {AmpAccessEvaluator} from './access-expr';
 import {AccessExpressionProcessor} from './calculator-expr';
+import {LocalStorageHelper} from './local-storage-helper';
 
 /**
  * TODO (@AnuragVasanwala): Need discussion regarding configuration for javascript variable notation: defaultOperation or default_operation?
@@ -20,12 +21,7 @@ export class BlockProcessor {
     this.accessEvaluator = new AmpAccessEvaluator();
 
     this.readyCallback = readyCallback;
-
     this.handleDynamicOperation();
-    // // Check variable existence with localStorage
-    // if (!this.variableExists()) {
-    //   // Perform necessary default-operation
-    // }
   }
 
   /**
@@ -37,7 +33,10 @@ export class BlockProcessor {
 
     // TODO(@AnuragVasanwala): Replace `for-each` loop with `for-in` loop for better performance
     Object.keys(this.configuration).forEach(function (variable) {
-      if (variable !== 'top_level' && localStorage.getItem(variable) === null) {
+      if (
+        variable !== 'top_level' &&
+        LocalStorageHelper.getItem(variable) === null
+      ) {
         result = false;
         return false;
       }
@@ -54,7 +53,7 @@ export class BlockProcessor {
    * @return {!JsonObject}
    */
   localStorageAsJsonObject() {
-    return {...localStorage};
+    return LocalStorageHelper.getAsJsonObject();
   }
 
   /**
@@ -100,7 +99,6 @@ export class BlockProcessor {
           localStorageResult[variable] === 'true' ? true : false;
       }
     });
-
     const result = this.accessEvaluator.evaluate(expr, localStorageResult);
     return result;
   }
@@ -162,10 +160,11 @@ export class BlockProcessor {
   /**
    * Processes dynamic operation
    * @param {!JsonObject} jsonData
+   * @param {number} expiration
    * @param {function()} callback
    * @return {*}
    */
-  processDynamicOperation(jsonData, callback) {
+  processDynamicOperation(jsonData, expiration, callback) {
     if (jsonData === null) {
       callback(null);
       return;
@@ -176,7 +175,7 @@ export class BlockProcessor {
         // TODO (@AnuragVasanwala): Add support to re-compute parameters
         this.handleFetchRequest('GET', jsonData, (res) => {
           Object.keys(res).forEach(function (variable) {
-            localStorage.setItem(variable, res[variable]);
+            LocalStorageHelper.setItem(variable, res[variable], expiration);
           });
           callback(res);
         });
@@ -184,7 +183,7 @@ export class BlockProcessor {
       case 'POST':
         return this.handleFetchRequest('POST', jsonData, (res) => {
           Object.keys(res).forEach(function (variable) {
-            localStorage.setItem(variable, res[variable]);
+            LocalStorageHelper.setItem(variable, res[variable], expiration);
           });
           callback(res);
         });
@@ -193,7 +192,7 @@ export class BlockProcessor {
         // Array Index: [0] = <variableName> | [1] = '=' | [2] = <operation>
         const opData = jsonData.operation.split('=');
         const result = this.compute(opData[1].trim());
-        localStorage.setItem(opData[0].trim(), result);
+        LocalStorageHelper.setItem(opData[0].trim(), result, expiration);
         callback(result);
         break;
       //operation;
@@ -213,12 +212,17 @@ export class BlockProcessor {
 
     // STEP 1: Check all jsonConfiguration variables with localStorage
     if (scope.variablesExists() == false) {
+      const expiration = scope.computeExpiration(
+        scope.configuration.top_level.expiration
+      );
+
       // Execute top-level->defaultOperation
       scope.processDynamicOperation(
         scope.configuration.top_level.default_operation,
+        expiration,
         (res) => {
           Object.keys(res).forEach(function (variable) {
-            localStorage.setItem(variable, res[variable]);
+            LocalStorageHelper.setItem(variable, res[variable], expiration);
           });
 
           currPos += 1;
@@ -233,11 +237,17 @@ export class BlockProcessor {
     let currPos = 0;
     // TODO(@AnuragVasanwala): Replace `for-each` loop with `for-in` loop for better performance
     Object.keys(this.configuration).forEach(function (variable) {
-      // Top-Level Default Operation Block
+      // Variable Operation Block
       if (variable !== 'top_level') {
-        if (localStorage.getItem(variable) === null) {
+        // If variable is null, perform default operation
+        if (LocalStorageHelper.getItem(variable) === null) {
+          const expiration = scope.computeExpiration(
+            scope.configuration[variable].expiration
+          );
+
           scope.processDynamicOperation(
             scope.configuration[variable].default_operation,
+            expiration,
             (opt_res) => {
               currPos += 1;
               if (currPos == configLen) {
@@ -247,10 +257,13 @@ export class BlockProcessor {
           );
         }
 
+        // Evaluate condition
         if (scope.evaluate(scope.configuration[variable].condition)) {
           // True Operation Block
+          const expiration = null;
           scope.processDynamicOperation(
             scope.configuration[variable].true_operation,
+            expiration,
             (opt_res) => {
               currPos += 1;
 
@@ -261,8 +274,10 @@ export class BlockProcessor {
           );
         } else {
           // False Operation Block
+          const expiration = null;
           scope.processDynamicOperation(
             scope.configuration[variable].false_operation,
+            expiration,
             (opt_res) => {
               currPos += 1;
 
@@ -277,32 +292,30 @@ export class BlockProcessor {
   }
 
   /**
-   * WIP
-   * @param {!JsonData} varJsonConfiguration
-   * @param {string} variableName
-   * @return {boolean}
+   *
+   * @param {string} expiration
+   * @return {int}
    */
-  isExpired(varJsonConfiguration, variableName) {
-    const varData = JSON.parse(localStorage.getItem(variableName));
-    const currentDate = new Date(); //Year, Month, Date
-    const expirationDate = new Date(varData.expiration); //Year, Month, Date
-
-    if (currentDate < expirationDate) {
-      return true;
-    } else {
-      return false;
+  computeExpiration(expiration) {
+    switch (expiration) {
+      case 'once':
+        return -1; // Never expire
+        break;
+      case 'daily':
+        return Date.now() + 15000; // Expires daily
+        break;
+      case 'weekly':
+        return Date.now() + 20000; // Expires weekly
+        break;
+      case 'monthly':
+        return Date.now() + 25000; // Expires monthly
+        break;
+      case 'always':
+        return 0; // Always expires
+        break;
+      default:
+        return -1; // Never expire
+        break;
     }
-
-    //     switch (varJsonData.expiration) {
-    //       case 'daily':
-    //         break;
-    //       case 'weekly':
-    //         break;
-    //       case 'monthly':
-    //         break;
-    //       default:
-    //         break;
-    //     }
-    //   }
   }
 }
