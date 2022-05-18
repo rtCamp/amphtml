@@ -1,7 +1,5 @@
 import {calculatorParser as parser} from '#build/parsers/calculator-expr-impl';
 
-import {hasOwn, map} from '#core/types/object';
-
 /**
  * Evaluates access expressions.
  *
