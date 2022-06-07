@@ -99,6 +99,7 @@ export class BlockProcessor {
           localStorageResult[variable] === 'true' ? true : false;
       }
     });
+
     const result = this.accessEvaluator.evaluate(expr, localStorageResult);
     return result;
   }
@@ -121,8 +122,9 @@ export class BlockProcessor {
    * @return {string}
    */
   handleFetchRequest(method, jsonData, callback) {
+    const scope = this;
+    const resultantURL = new URL(jsonData.url);
     if ('GET' === method) {
-      const scope = this;
       // Traverse through all parameters
       Object.keys(jsonData.parameters).forEach(function (variable) {
         // Retrieve parameter value from client
@@ -131,10 +133,10 @@ export class BlockProcessor {
         );
         // Update parameter value
         jsonData.parameters[variable] = result;
+
+        resultantURL.searchParams.set(variable, result);
       });
-      jsonData.url += '?' + new URLSearchParams(jsonData.parameters).toString();
     } else {
-      const scope = this;
       // Traverse through all parameters
       Object.keys(jsonData.parameters).forEach(function (variable) {
         // Retrieve parameter value from client
@@ -147,7 +149,7 @@ export class BlockProcessor {
       jsonData.options.body = JSON.stringify(jsonData.parameters);
     }
 
-    fetch(jsonData.url, jsonData.options)
+    fetch(resultantURL.href, jsonData.options)
       .then((response) => response.json())
       .then((data) => {
         callback(data);
@@ -300,22 +302,16 @@ export class BlockProcessor {
     switch (expiration) {
       case 'once':
         return -1; // Never expire
-        break;
       case 'daily':
         return Date.now() + 86400000; // Expires daily
-        break;
       case 'weekly':
         return Date.now() + 604800000; // Expires weekly (every 7 days)
-        break;
       case 'monthly':
         return Date.now() + 2592000000; // Expires monthly (every 30 days)
-        break;
       case 'always':
         return 0; // Always expires
-        break;
       default:
         return -1; // Never expire
-        break;
     }
   }
 }
