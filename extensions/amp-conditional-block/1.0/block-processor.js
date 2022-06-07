@@ -122,8 +122,9 @@ export class BlockProcessor {
    * @return {string}
    */
   handleFetchRequest(method, jsonData, callback) {
+    const scope = this;
+    const resultantURL = new URL(jsonData.url);
     if ('GET' === method) {
-      const scope = this;
       // Traverse through all parameters
       Object.keys(jsonData.parameters).forEach(function (variable) {
         // Retrieve parameter value from client
@@ -132,10 +133,10 @@ export class BlockProcessor {
         );
         // Update parameter value
         jsonData.parameters[variable] = result;
+
+        resultantURL.searchParams.set(variable, result);
       });
-      jsonData.url += '?' + new URLSearchParams(jsonData.parameters).toString();
     } else {
-      const scope = this;
       // Traverse through all parameters
       Object.keys(jsonData.parameters).forEach(function (variable) {
         // Retrieve parameter value from client
@@ -148,7 +149,7 @@ export class BlockProcessor {
       jsonData.options.body = JSON.stringify(jsonData.parameters);
     }
 
-    fetch(jsonData.url, jsonData.options)
+    fetch(resultantURL.href, jsonData.options)
       .then((response) => response.json())
       .then((data) => {
         callback(data);
