@@ -183,7 +183,7 @@ https://px-newspack.rt.gw/dist/v0/amp-conditional-block-1.0.js
 
 ### Clone
 
-SSH into your server and go to WordPress plugins directory `public/wp-content/plugins`
+SSH into your server and go to WordPress plugins directory `wp-content/plugins`
 
 ```shell
 # Goto your website's plugin directory
