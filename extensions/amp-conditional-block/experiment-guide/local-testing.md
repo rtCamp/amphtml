@@ -157,7 +157,7 @@ Now, "AMP Runtime" is available on `http://localhost:8000/dist`.
 
 ![Usage: Newspack Popups](./images/usage-newspack-popups.png)
 
-Install [localWP](https://localwp.com) and create a new website name `conditional-block` with default settings.
+Install [localWP](https://localwp.com) and create a new website named `conditional-block` with default settings.
 
 ### Clone
 
