@@ -105,3 +105,29 @@ amp-story .amp-video-eq {
   0% {transform: translateY(100%);}
   100% {transform: translateY(0);}
 }
+
+/* Possible Issues:
+1.animation-play-state` Not Toggling Correctly:
+   - The `animation-play-state` should switch between `running` and `paused` based on whether the video is playing or paused. If `.amp-video-eq-play` is not correctly added or removed, the animations might not start or stop as expected.
+
+2.Unnecessary `!important`:
+   - The use of `!important` on `pointer-events: none !important;` in `.amp-video-eq` might override necessary interactions if not carefully managed.
+
+Suggested Improvements:
+
+- Ensure the JavaScript controlling the video state properly toggles the `.amp-video-eq-play` class.
+- Verify that `pointer-events: none !important;` is necessary and doesn't interfere with other interactions.
+- Ensure that elements with the `noaudio` attribute are correctly preventing the display of `.amp-video-eq`.
+
+Here is the key part that might require attention:
+
+```css
+.amp-video-eq-col div {
+  animation-play-state: paused;
+}
+.amp-video-eq-play .amp-video-eq-col div {
+  animation-play-state: running;
+}
+```
+
+Make sure the `.amp-video-eq-play` class is being correctly toggled on the parent element when the video is playing or paused. If the class is not added or removed correctly, the animation states will not be applied properly, leading to the animations not starting or stopping as intended. */
